@@ -4,7 +4,7 @@ import Test exposing (..)
 import Expect
 import Set
 import String
-import App
+import Cell
 
 
 -- TODO: Work out how to have multiple test files.
@@ -13,7 +13,7 @@ import App
 
 all : Test
 all =
-    describe "App"
+    describe "Cell"
         [ describe "neighbours"
             [ test "returns all neighbouring Cells" <|
                 \() ->
@@ -30,7 +30,7 @@ all =
                                 , ( 2, 2 )
                                 ]
                     in
-                        Expect.equal neighbours (App.neighbours ( 1, 1 ))
+                        Expect.equal neighbours (Cell.neighbours ( 1, 1 ))
             ]
         , describe "activeCells"
             [ test "returns all living Cells and their neighbours" <|
@@ -69,7 +69,7 @@ all =
                                 , ( 6, 6 )
                                 ]
                     in
-                        Expect.equal activeCells (App.activeCells cells)
+                        Expect.equal activeCells (Cell.activeCells cells)
             ]
         , describe "livingNeighbours"
             [ test "returns Cell neighbours which are in the given livingCells Set" <|
@@ -83,7 +83,7 @@ all =
                     in
                         Expect.equal
                             livingNeighbours
-                            (App.livingNeighbours livingCells ( 2, 1 ))
+                            (Cell.livingNeighbours livingCells ( 2, 1 ))
             ]
         , describe "nextLivingCells"
             [ test "any live cell with fewer than two live neighbours dies" <|
@@ -136,5 +136,5 @@ expectCellToBeDead livingCells =
 
 
 cellInNextLivingCells livingCells =
-    App.nextLivingCells livingCells
+    Cell.nextLivingCells livingCells
         |> Set.member ( 1, 1 )
