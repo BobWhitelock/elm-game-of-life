@@ -1,6 +1,7 @@
 module App exposing (..)
 
 import Html exposing (Html)
+import Html.Events exposing (onClick)
 import Set exposing (Set)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -9,6 +10,7 @@ import Time exposing (Time, millisecond)
 
 type alias Model =
     { livingCells : Set Cell
+    , running : Bool
     }
 
 
@@ -26,18 +28,27 @@ init _ =
                 , ( 1, 2 )
                 , ( 2, 2 )
                 ]
+      , running = False
       }
     , Cmd.none
     )
 
 
 type Msg
-    = Tick Time
+    = ToggleRunning
+    | Tick Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ToggleRunning ->
+            ( { model
+                | running = not model.running
+              }
+            , Cmd.none
+            )
+
         Tick _ ->
             ( { model
                 | livingCells = nextLivingCells model.livingCells
@@ -125,10 +136,27 @@ add ( x1, y1 ) ( x2, y2 ) =
 
 view : Model -> Html Msg
 view model =
+    let
+        runButtonText =
+            if model.running then
+                "Pause"
+            else
+                "Run"
+    in
+        Html.div []
+            [ gameView model
+            , Html.button
+                [ onClick ToggleRunning ]
+                [ Html.text runButtonText ]
+            ]
+
+
+gameView : Model -> Html Msg
+gameView model =
     svg
-        [ width "1000"
-        , height "1000"
-        , viewBox "0 0 500 500"
+        [ width "500"
+        , height "500"
+        , viewBox "0 0 200 200"
         ]
         (List.concat
             [ gridLines
@@ -209,4 +237,7 @@ rect ( rectX, rectY ) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Time.every (300 * millisecond) Tick
+    if model.running then
+        Time.every (300 * millisecond) Tick
+    else
+        Sub.none
