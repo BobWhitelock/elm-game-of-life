@@ -12,9 +12,9 @@ import Cell exposing (Cell)
 gameView : Model -> Html Msg
 gameView model =
     svg
-        [ width "500"
-        , height "500"
-        , viewBox "0 0 200 200"
+        [ width worldViewSizeString
+        , height worldViewSizeString
+        , viewBox viewBoxSizeString
         ]
         (List.concat
             [ gridLines
@@ -23,15 +23,59 @@ gameView model =
         )
 
 
+borderSize : Int
+borderSize =
+    5
+
+
+cellSize : Int
+cellSize =
+    10
+
+
+numberVisibleCells : Int
+numberVisibleCells =
+    24
+
+
+farBorderPosition : Int
+farBorderPosition =
+    (cellSize * numberVisibleCells) + borderSize
+
+
+scale : Int
+scale =
+    2
+
+
+viewBoxSize : Int
+viewBoxSize =
+    (numberVisibleCells * cellSize) + (borderSize * 2)
+
+
+viewBoxSizeString : String
+viewBoxSizeString =
+    let
+        sizeString =
+            toString viewBoxSize
+    in
+        "0 0 " ++ sizeString ++ " " ++ sizeString
+
+
+worldViewSizeString : String
+worldViewSizeString =
+    toString (scale * viewBoxSize)
+
+
 gridLines : List (Svg Msg)
 gridLines =
     let
         lineRange =
-            List.range 1 11
+            List.range 0 numberVisibleCells
 
         linesUsing =
             \lineFunction ->
-                List.map (\n -> lineFunction (10 * n)) lineRange
+                List.map (\n -> lineFunction ((cellSize * n) + borderSize)) lineRange
     in
         List.concat
             [ linesUsing verticalLineAt
@@ -39,18 +83,14 @@ gridLines =
             ]
 
 
-
--- TODO: get rid of implicit hard-coding of cell/border size numbers.
-
-
 verticalLineAt : Int -> Svg Msg
 verticalLineAt xCoord =
-    line ( xCoord, 10 ) ( xCoord, 110 )
+    line ( xCoord, borderSize ) ( xCoord, farBorderPosition )
 
 
 horizontalLineAt : Int -> Svg Msg
 horizontalLineAt yCoord =
-    line ( 10, yCoord ) ( 110, yCoord )
+    line ( borderSize, yCoord ) ( farBorderPosition, yCoord )
 
 
 line : ( Int, Int ) -> ( Int, Int ) -> Svg Msg
@@ -75,7 +115,7 @@ gridCells cells =
     let
         drawCellRect =
             \( x, y ) ->
-                rect ( 10 + (10 * x), 10 + (10 * y) )
+                rect ( borderSize + (cellSize * x), borderSize + (cellSize * y) )
     in
         -- TODO: Need to convert to list here?
         Set.toList cells
@@ -87,7 +127,9 @@ rect ( rectX, rectY ) =
     Svg.rect
         [ x (toString rectX)
         , y (toString rectY)
-        , width "10"
-        , height "10"
+        , width (toString cellSize)
+        , height (toString cellSize)
+        , stroke "black"
+        , fill "darkgrey"
         ]
         []
