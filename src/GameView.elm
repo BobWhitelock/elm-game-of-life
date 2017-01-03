@@ -9,6 +9,10 @@ import Model exposing (Model)
 import Cell exposing (Cell)
 
 
+type alias Coordinate =
+    ( Int, Int )
+
+
 gameView : Model -> Html Msg
 gameView model =
     svg
@@ -85,17 +89,17 @@ gridLines =
 
 verticalLineAt : Int -> Svg Msg
 verticalLineAt xCoord =
-    line ( xCoord, borderSize ) ( xCoord, farBorderPosition )
+    lineBetween ( xCoord, borderSize ) ( xCoord, farBorderPosition )
 
 
 horizontalLineAt : Int -> Svg Msg
 horizontalLineAt yCoord =
-    line ( borderSize, yCoord ) ( farBorderPosition, yCoord )
+    lineBetween ( borderSize, yCoord ) ( farBorderPosition, yCoord )
 
 
-line : ( Int, Int ) -> ( Int, Int ) -> Svg Msg
-line ( xStart, yStart ) ( xEnd, yEnd ) =
-    Svg.line
+lineBetween : Coordinate -> Coordinate -> Svg Msg
+lineBetween ( xStart, yStart ) ( xEnd, yEnd ) =
+    line
         [ x1 (toString xStart)
         , y1 (toString yStart)
         , x2 (toString xEnd)
@@ -115,16 +119,16 @@ gridCells cells =
     let
         drawCellRect =
             \( x, y ) ->
-                rect ( borderSize + (cellSize * x), borderSize + (cellSize * y) )
+                cellRectAt ( borderSize + (cellSize * x), borderSize + (cellSize * y) )
     in
         -- TODO: Need to convert to list here?
         Set.toList cells
             |> List.map drawCellRect
 
 
-rect : ( Int, Int ) -> Svg Msg
-rect ( rectX, rectY ) =
-    Svg.rect
+cellRectAt : Coordinate -> Svg Msg
+cellRectAt ( rectX, rectY ) =
+    rect
         [ x (toString rectX)
         , y (toString rectY)
         , width (toString cellSize)
