@@ -114,14 +114,14 @@ all =
                             Set.fromList [ ( 0, 0 ), ( 1, 1 ), ( 2, 2 ), ( 0, 1 ), ( 1, 0 ) ]
                     in
                         expectCellToBeDead livingCells
+            , test "any dead cell with exactly three live neighbours becomes a live cell" <|
+                \() ->
+                    let
+                        livingCells =
+                            Set.fromList [ ( 0, 0 ), ( 2, 2 ), ( 2, 0 ) ]
+                    in
+                        expectCellToBeAlive livingCells
             ]
-        , test "any dead cell with exactly three live neighbours becomes a live cell" <|
-            \() ->
-                let
-                    livingCells =
-                        Set.fromList [ ( 0, 0 ), ( 2, 2 ), ( 2, 0 ) ]
-                in
-                    expectCellToBeAlive livingCells
         ]
 
 
