@@ -7,6 +7,7 @@ import Svg.Attributes exposing (..)
 import Messages exposing (Msg)
 import Model exposing (Model)
 import Cell exposing (Cell)
+import ViewConfig exposing (config)
 
 
 type alias Coordinate =
@@ -27,24 +28,9 @@ gameView model =
         )
 
 
-borderSize : Int
-borderSize =
-    5
-
-
-cellSize : Int
-cellSize =
-    10
-
-
-numberVisibleCells : Int
-numberVisibleCells =
-    24
-
-
 farBorderPosition : Int
 farBorderPosition =
-    (cellSize * numberVisibleCells) + borderSize
+    ViewConfig.farBorderPosition config
 
 
 scale : Int
@@ -54,7 +40,7 @@ scale =
 
 viewBoxSize : Int
 viewBoxSize =
-    (numberVisibleCells * cellSize) + (borderSize * 2)
+    (config.visibleCells * config.cellSize) + (config.borderSize * 2)
 
 
 viewBoxSizeString : String
@@ -75,11 +61,11 @@ gridLines : List (Svg Msg)
 gridLines =
     let
         lineRange =
-            List.range 0 numberVisibleCells
+            List.range 0 config.visibleCells
 
         linesUsing =
             \lineFunction ->
-                List.map (\n -> lineFunction ((cellSize * n) + borderSize)) lineRange
+                List.map (\n -> lineFunction ((config.cellSize * n) + config.borderSize)) lineRange
     in
         List.concat
             [ linesUsing verticalLineAt
@@ -89,12 +75,12 @@ gridLines =
 
 verticalLineAt : Int -> Svg Msg
 verticalLineAt xCoord =
-    lineBetween ( xCoord, borderSize ) ( xCoord, farBorderPosition )
+    lineBetween ( xCoord, config.borderSize ) ( xCoord, farBorderPosition )
 
 
 horizontalLineAt : Int -> Svg Msg
 horizontalLineAt yCoord =
-    lineBetween ( borderSize, yCoord ) ( farBorderPosition, yCoord )
+    lineBetween ( config.borderSize, yCoord ) ( farBorderPosition, yCoord )
 
 
 lineBetween : Coordinate -> Coordinate -> Svg Msg
@@ -117,7 +103,7 @@ gridCells cells =
             ( 0, 0 )
 
         bottomRightCellCoordinate =
-            numberVisibleCells - (1)
+            config.visibleCells - (1)
 
         bottomRightCell =
             ( bottomRightCellCoordinate, bottomRightCellCoordinate )
@@ -127,7 +113,7 @@ gridCells cells =
 
         drawCellRect =
             \( x, y ) ->
-                cellRectAt ( borderSize + (cellSize * x), borderSize + (cellSize * y) )
+                cellRectAt ( config.borderSize + (config.cellSize * x), config.borderSize + (config.cellSize * y) )
     in
         Set.filter isVisible cells
             |> Set.toList
@@ -139,8 +125,8 @@ cellRectAt ( rectX, rectY ) =
     rect
         [ x (toString rectX)
         , y (toString rectY)
-        , width (toString cellSize)
-        , height (toString cellSize)
+        , width (toString config.cellSize)
+        , height (toString config.cellSize)
         , stroke "black"
         , fill "darkgrey"
         ]
