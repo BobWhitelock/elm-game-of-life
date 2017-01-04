@@ -122,6 +122,21 @@ all =
                     in
                         expectCellToBeAlive livingCells
             ]
+        , describe "isVisible"
+            -- TODO: May be better test values can use here - use fuzz testing?
+            [ test "a Cell within the bounding Cells is visible" <|
+                \() ->
+                    expectCellToBeVisible ( 17, 17 )
+            , test "a Cell outside the bounding Cells is not visible" <|
+                \() ->
+                    expectCellToNotBeVisible ( 5, 25 )
+            , test "another Cell outside the bounding Cells is not visible" <|
+                \() ->
+                    expectCellToNotBeVisible ( 25, 5 )
+            , test "a Cell on the border with the bounding Cells is visible" <|
+                \() ->
+                    expectCellToBeVisible ( 10, 20 )
+            ]
         ]
 
 
@@ -138,3 +153,13 @@ expectCellToBeDead livingCells =
 cellInNextLivingCells livingCells =
     Cell.nextLivingCells livingCells
         |> Set.member ( 1, 1 )
+
+
+expectCellToBeVisible cell =
+    Cell.isVisible ( 10, 10 ) ( 20, 20 ) cell
+        |> Expect.true "Expected Cell to be visible."
+
+
+expectCellToNotBeVisible cell =
+    Cell.isVisible ( 10, 10 ) ( 20, 20 ) cell
+        |> Expect.false "Expected Cell to not be visible."

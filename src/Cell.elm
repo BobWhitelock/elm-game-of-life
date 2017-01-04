@@ -5,9 +5,11 @@ module Cell
         , neighbours
         , livingNeighbours
         , activeCells
+        , isVisible
         )
 
 import Set exposing (Set)
+import Tuple exposing (first, second)
 
 
 type alias Cell =
@@ -89,3 +91,11 @@ activeCells livingCells =
 add : Cell -> Cell -> Cell
 add ( x1, y1 ) ( x2, y2 ) =
     ( x1 + x2, y1 + y2 )
+
+
+isVisible : Cell -> Cell -> Cell -> Bool
+isVisible topLeftCell bottomRightCell thisCell =
+    (first topLeftCell <= first thisCell)
+        && (second topLeftCell <= second thisCell)
+        && (first bottomRightCell >= first thisCell)
+        && (second bottomRightCell >= second thisCell)

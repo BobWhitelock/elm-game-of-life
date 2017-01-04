@@ -110,19 +110,27 @@ lineBetween ( xStart, yStart ) ( xEnd, yEnd ) =
         []
 
 
-
--- TODO: Don't draw outside of grid area.
-
-
 gridCells : Set Cell -> List (Svg Msg)
 gridCells cells =
     let
+        topLeftCell =
+            ( 0, 0 )
+
+        bottomRightCellCoordinate =
+            numberVisibleCells - (1)
+
+        bottomRightCell =
+            ( bottomRightCellCoordinate, bottomRightCellCoordinate )
+
+        isVisible =
+            Cell.isVisible topLeftCell bottomRightCell
+
         drawCellRect =
             \( x, y ) ->
                 cellRectAt ( borderSize + (cellSize * x), borderSize + (cellSize * y) )
     in
-        -- TODO: Need to convert to list here?
-        Set.toList cells
+        Set.filter isVisible cells
+            |> Set.toList
             |> List.map drawCellRect
 
 
