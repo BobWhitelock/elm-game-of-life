@@ -7,11 +7,8 @@ import Svg.Attributes exposing (..)
 import Messages exposing (Msg)
 import Model exposing (Model)
 import Cell exposing (Cell)
+import Coordinates exposing (Coordinates)
 import ViewConfig exposing (config)
-
-
-type alias Coordinate =
-    ( Int, Int )
 
 
 gameView : Model -> Html Msg
@@ -83,7 +80,7 @@ horizontalLineAt yCoord =
     lineBetween ( config.borderSize, yCoord ) ( farBorderPosition, yCoord )
 
 
-lineBetween : Coordinate -> Coordinate -> Svg Msg
+lineBetween : Coordinates -> Coordinates -> Svg Msg
 lineBetween ( xStart, yStart ) ( xEnd, yEnd ) =
     line
         [ x1 (toString xStart)
@@ -120,7 +117,7 @@ gridCells cells =
             |> List.map drawCellRect
 
 
-cellRectAt : Coordinate -> Svg Msg
+cellRectAt : Coordinates -> Svg Msg
 cellRectAt ( rectX, rectY ) =
     rect
         [ x (toString rectX)
