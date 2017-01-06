@@ -1,10 +1,12 @@
 module GameView exposing (gameView)
 
 import Html exposing (Html)
+import Json.Decode as Json
 import Set exposing (Set)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Messages exposing (Msg)
+import Svg.Events exposing (on)
+import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
@@ -17,12 +19,33 @@ gameView model =
         [ width worldViewSizeString
         , height worldViewSizeString
         , viewBox viewBoxSizeString
+        , on "click" (Json.map MouseClick relativeCoordinates)
         ]
         (List.concat
             [ gridLines
             , gridCells model.livingCells
             ]
         )
+
+
+relativeCoordinates : Json.Decoder Coordinates
+relativeCoordinates =
+    -- Decode the Coordinates of the current mouse position relative to the origin.
+    let
+        offsetX =
+            Json.field "offsetX" Json.int
+
+        offsetY =
+            Json.field "offsetY" Json.int
+
+        coordinatesFromOffsetPosition =
+            \x ->
+                \y ->
+                    ( (x // scale) - config.borderSize
+                    , (y // scale) - config.borderSize
+                    )
+    in
+        Json.map2 coordinatesFromOffsetPosition offsetX offsetY
 
 
 farBorderPosition : Int

@@ -1,13 +1,15 @@
 module Model exposing (..)
 
 import Set exposing (Set)
-import Messages exposing (Msg)
+import Messages exposing (Msg(..))
 import Cell exposing (Cell)
+import Coordinates exposing (Coordinates)
 
 
 type alias Model =
     { livingCells : Set Cell
     , running : Bool
+    , mousePosition : Coordinates
     }
 
 
@@ -22,6 +24,8 @@ init _ =
                 , ( 2, 2 )
                 ]
       , running = False
+      , mousePosition =
+            ( 0, 0 )
       }
     , Cmd.none
     )
