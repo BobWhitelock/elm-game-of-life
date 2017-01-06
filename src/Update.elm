@@ -6,6 +6,7 @@ import Cell exposing (..)
 import Coordinates exposing (Coordinates)
 import Messages exposing (..)
 import ViewConfig exposing (config)
+import Utils
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -41,18 +42,10 @@ handleMouseClick model coordinates =
             case maybeCell of
                 Just cell ->
                     ( { model
-                        | livingCells = toggleCellIn model.livingCells cell
+                        | livingCells = Utils.toggleIn model.livingCells cell
                       }
                     , Cmd.none
                     )
 
                 Nothing ->
                     ( model, Cmd.none )
-
-
-toggleCellIn : Set Cell -> Cell -> Set Cell
-toggleCellIn cells cell =
-    if Set.member cell cells then
-        Set.remove cell cells
-    else
-        Set.insert cell cells
