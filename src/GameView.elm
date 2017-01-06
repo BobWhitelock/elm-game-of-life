@@ -58,6 +58,11 @@ scale =
     2
 
 
+lineWidth : String
+lineWidth =
+    "0.5"
+
+
 viewBoxSize : Int
 viewBoxSize =
     (config.visibleCells * config.cellSize) + (config.borderSize * 2)
@@ -110,7 +115,7 @@ lineBetween ( xStart, yStart ) ( xEnd, yEnd ) =
         , y1 (toString yStart)
         , x2 (toString xEnd)
         , y2 (toString yEnd)
-        , strokeWidth "1"
+        , strokeWidth lineWidth
         , stroke "black"
         ]
         []
@@ -147,6 +152,7 @@ cellRectAt ( rectX, rectY ) =
         , y (toString rectY)
         , width (toString config.cellSize)
         , height (toString config.cellSize)
+        , strokeWidth lineWidth
         , stroke "black"
         , fill "darkgrey"
         ]
