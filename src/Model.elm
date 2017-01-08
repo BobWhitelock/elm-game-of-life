@@ -10,6 +10,7 @@ type alias Model =
     { livingCells : Set Cell
     , running : Bool
     , lastMouseClick : Coordinates
+    , zoomLevel : Float
     }
 
 
@@ -25,6 +26,7 @@ init _ =
                 ]
       , running = False
       , lastMouseClick = ( 0, 0 )
+      , zoomLevel = 1
       }
     , Cmd.none
     )

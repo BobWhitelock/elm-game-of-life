@@ -22,18 +22,18 @@ gameView model =
         svg
             [ width svgSize
             , height svgSize
-            , viewBox viewBoxSizeString
-            , on "click" (Json.map MouseClick relativeCoordinates)
+            , viewBox (viewBoxSizeString model)
+            , on "click" (Json.map MouseClick (relativeCoordinates model.zoomLevel))
             ]
             (List.concat
-                [ gridLines
-                , gridCells model.livingCells
+                [ gridLines model
+                , gridCells model
                 ]
             )
 
 
-relativeCoordinates : Json.Decoder Coordinates
-relativeCoordinates =
+relativeCoordinates : Float -> Json.Decoder Coordinates
+relativeCoordinates zoomLevel =
     -- Decode the Coordinates of the current mouse position relative to the origin.
     let
         offsetX =
@@ -45,16 +45,16 @@ relativeCoordinates =
         coordinatesFromOffsetPosition =
             \x ->
                 \y ->
-                    ( floor ((toFloat x / ViewConfig.scale) - toFloat config.borderSize)
-                    , floor ((toFloat y / ViewConfig.scale) - toFloat config.borderSize)
+                    ( floor ((toFloat x / zoomLevel) - toFloat config.borderSize)
+                    , floor ((toFloat y / zoomLevel) - toFloat config.borderSize)
                     )
     in
         Json.map2 coordinatesFromOffsetPosition offsetX offsetY
 
 
-farBorderPosition : Int
-farBorderPosition =
-    ViewConfig.farBorderPosition config
+farBorderPosition : Float -> Int
+farBorderPosition zoomLevel =
+    ViewConfig.farBorderPosition config zoomLevel
 
 
 lineWidth : String
@@ -62,39 +62,39 @@ lineWidth =
     "0.5"
 
 
-viewBoxSizeString : String
-viewBoxSizeString =
+viewBoxSizeString : Model -> String
+viewBoxSizeString model =
     let
         sizeString =
-            toString (ViewConfig.viewBoxSize config)
+            toString (ViewConfig.viewBoxSize config model.zoomLevel)
     in
         "0 0 " ++ sizeString ++ " " ++ sizeString
 
 
-gridLines : List (Svg Msg)
-gridLines =
+gridLines : Model -> List (Svg Msg)
+gridLines model =
     let
         lineRange =
-            List.range 0 (ViewConfig.visibleCells config)
+            List.range 0 (ViewConfig.visibleCells config model.zoomLevel)
 
         linesUsing =
             \lineFunction ->
                 List.map (\n -> lineFunction ((config.cellSize * n) + config.borderSize)) lineRange
     in
         List.concat
-            [ linesUsing verticalLineAt
-            , linesUsing horizontalLineAt
+            [ linesUsing (verticalLineAt model.zoomLevel)
+            , linesUsing (horizontalLineAt model.zoomLevel)
             ]
 
 
-verticalLineAt : Int -> Svg Msg
-verticalLineAt xCoord =
-    lineBetween ( xCoord, config.borderSize ) ( xCoord, farBorderPosition )
+verticalLineAt : Float -> Int -> Svg Msg
+verticalLineAt zoomLevel xCoord =
+    lineBetween ( xCoord, config.borderSize ) ( xCoord, farBorderPosition zoomLevel )
 
 
-horizontalLineAt : Int -> Svg Msg
-horizontalLineAt yCoord =
-    lineBetween ( config.borderSize, yCoord ) ( farBorderPosition, yCoord )
+horizontalLineAt : Float -> Int -> Svg Msg
+horizontalLineAt zoomLevel yCoord =
+    lineBetween ( config.borderSize, yCoord ) ( farBorderPosition zoomLevel, yCoord )
 
 
 lineBetween : Coordinates -> Coordinates -> Svg Msg
@@ -110,14 +110,14 @@ lineBetween ( xStart, yStart ) ( xEnd, yEnd ) =
         []
 
 
-gridCells : Set Cell -> List (Svg Msg)
-gridCells cells =
+gridCells : Model -> List (Svg Msg)
+gridCells model =
     let
         topLeftCell =
             ( 0, 0 )
 
         bottomRightCellCoordinate =
-            (ViewConfig.visibleCells config) - (1)
+            (ViewConfig.visibleCells config model.zoomLevel) - (1)
 
         bottomRightCell =
             ( bottomRightCellCoordinate, bottomRightCellCoordinate )
@@ -129,7 +129,7 @@ gridCells cells =
             \( x, y ) ->
                 cellRectAt ( config.borderSize + (config.cellSize * x), config.borderSize + (config.cellSize * y) )
     in
-        Set.filter isVisible cells
+        Set.filter isVisible model.livingCells
             |> Set.toList
             |> List.map drawCellRect
 

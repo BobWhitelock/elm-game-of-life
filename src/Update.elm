@@ -28,12 +28,18 @@ update msg model =
         MouseClick coordinates ->
             handleMouseClick model coordinates
 
+        ZoomOut ->
+            ( { model | zoomLevel = model.zoomLevel / 2 }, Cmd.none )
+
+        ZoomIn ->
+            ( { model | zoomLevel = model.zoomLevel * 2 }, Cmd.none )
+
 
 handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
 handleMouseClick model coordinates =
     let
         maybeCell =
-            Coordinates.cellAtCoordinates config coordinates
+            Coordinates.cellAtCoordinates config model.zoomLevel coordinates
 
         modelWithMouseClick =
             updateLastMouseClick model coordinates

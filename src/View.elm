@@ -21,4 +21,10 @@ view model =
             , button
                 [ onClick ToggleRunning ]
                 [ text runButtonText ]
+            , button
+                [ onClick ZoomIn ]
+                [ text "+" ]
+            , button
+                [ onClick ZoomOut ]
+                [ text "-" ]
             ]

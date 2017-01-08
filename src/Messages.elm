@@ -8,3 +8,5 @@ type Msg
     = ToggleRunning
     | Tick Time
     | MouseClick Coordinates
+    | ZoomOut
+    | ZoomIn
