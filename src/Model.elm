@@ -4,13 +4,14 @@ import Set exposing (Set)
 import Messages exposing (Msg(..))
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
+import ViewConfig exposing (ViewConfig)
 
 
 type alias Model =
     { livingCells : Set Cell
     , running : Bool
     , lastMouseClick : Coordinates
-    , zoomLevel : Float
+    , viewConfig : ViewConfig
     }
 
 
@@ -26,7 +27,7 @@ init _ =
                 ]
       , running = False
       , lastMouseClick = ( 0, 0 )
-      , zoomLevel = 1
+      , viewConfig = ViewConfig.defaultConfig
       }
     , Cmd.none
     )

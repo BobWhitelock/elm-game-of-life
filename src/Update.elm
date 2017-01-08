@@ -4,7 +4,7 @@ import Model exposing (Model)
 import Cell exposing (..)
 import Coordinates exposing (Coordinates)
 import Messages exposing (..)
-import ViewConfig exposing (config)
+import ViewConfig
 import Utils
 
 
@@ -29,17 +29,32 @@ update msg model =
             handleMouseClick model coordinates
 
         ZoomOut ->
-            ( { model | zoomLevel = model.zoomLevel / 2 }, Cmd.none )
+            ( multiplyZoomLevel 0.5 model, Cmd.none )
 
         ZoomIn ->
-            ( { model | zoomLevel = model.zoomLevel * 2 }, Cmd.none )
+            ( multiplyZoomLevel 2 model, Cmd.none )
+
+
+multiplyZoomLevel : Float -> Model -> Model
+multiplyZoomLevel multiplier currentModel =
+    let
+        currentViewConfig =
+            currentModel.viewConfig
+
+        newViewConfig =
+            { currentViewConfig
+                | zoomLevel =
+                    currentViewConfig.zoomLevel * multiplier
+            }
+    in
+        { currentModel | viewConfig = newViewConfig }
 
 
 handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
 handleMouseClick model coordinates =
     let
         maybeCell =
-            Coordinates.cellAtCoordinates config model.zoomLevel coordinates
+            Coordinates.cellAtCoordinates model.viewConfig coordinates
 
         modelWithMouseClick =
             updateLastMouseClick model coordinates

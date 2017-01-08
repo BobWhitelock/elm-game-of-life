@@ -10,12 +10,15 @@ import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
-import ViewConfig exposing (config)
+import ViewConfig exposing (ViewConfig)
 
 
 gameView : Model -> Html Msg
 gameView model =
     let
+        config =
+            model.viewConfig
+
         svgSize =
             toString config.svgSize
     in
@@ -23,7 +26,7 @@ gameView model =
             [ width svgSize
             , height svgSize
             , viewBox (viewBoxSizeString model)
-            , on "click" (Json.map MouseClick (relativeCoordinates model.zoomLevel))
+            , on "click" (Json.map MouseClick (relativeCoordinates config))
             ]
             (List.concat
                 [ gridLines model
@@ -32,8 +35,8 @@ gameView model =
             )
 
 
-relativeCoordinates : Float -> Json.Decoder Coordinates
-relativeCoordinates zoomLevel =
+relativeCoordinates : ViewConfig -> Json.Decoder Coordinates
+relativeCoordinates config =
     -- Decode the Coordinates of the current mouse position relative to the origin.
     let
         offsetX =
@@ -45,16 +48,16 @@ relativeCoordinates zoomLevel =
         coordinatesFromOffsetPosition =
             \x ->
                 \y ->
-                    ( floor ((toFloat x / zoomLevel) - toFloat config.borderSize)
-                    , floor ((toFloat y / zoomLevel) - toFloat config.borderSize)
+                    ( floor ((toFloat x / config.zoomLevel) - toFloat config.borderSize)
+                    , floor ((toFloat y / config.zoomLevel) - toFloat config.borderSize)
                     )
     in
         Json.map2 coordinatesFromOffsetPosition offsetX offsetY
 
 
-farBorderPosition : Float -> Int
-farBorderPosition zoomLevel =
-    ViewConfig.farBorderPosition config zoomLevel
+farBorderPosition : ViewConfig -> Int
+farBorderPosition config =
+    ViewConfig.farBorderPosition config
 
 
 lineWidth : String
@@ -66,7 +69,7 @@ viewBoxSizeString : Model -> String
 viewBoxSizeString model =
     let
         sizeString =
-            toString (ViewConfig.viewBoxSize config model.zoomLevel)
+            toString (ViewConfig.viewBoxSize model.viewConfig)
     in
         "0 0 " ++ sizeString ++ " " ++ sizeString
 
@@ -74,27 +77,30 @@ viewBoxSizeString model =
 gridLines : Model -> List (Svg Msg)
 gridLines model =
     let
+        config =
+            model.viewConfig
+
         lineRange =
-            List.range 0 (ViewConfig.visibleCells config model.zoomLevel)
+            List.range 0 (ViewConfig.visibleCells config)
 
         linesUsing =
             \lineFunction ->
                 List.map (\n -> lineFunction ((config.cellSize * n) + config.borderSize)) lineRange
     in
         List.concat
-            [ linesUsing (verticalLineAt model.zoomLevel)
-            , linesUsing (horizontalLineAt model.zoomLevel)
+            [ linesUsing (verticalLineAt model.viewConfig)
+            , linesUsing (horizontalLineAt model.viewConfig)
             ]
 
 
-verticalLineAt : Float -> Int -> Svg Msg
-verticalLineAt zoomLevel xCoord =
-    lineBetween ( xCoord, config.borderSize ) ( xCoord, farBorderPosition zoomLevel )
+verticalLineAt : ViewConfig -> Int -> Svg Msg
+verticalLineAt config xCoord =
+    lineBetween ( xCoord, config.borderSize ) ( xCoord, farBorderPosition config )
 
 
-horizontalLineAt : Float -> Int -> Svg Msg
-horizontalLineAt zoomLevel yCoord =
-    lineBetween ( config.borderSize, yCoord ) ( farBorderPosition zoomLevel, yCoord )
+horizontalLineAt : ViewConfig -> Int -> Svg Msg
+horizontalLineAt config yCoord =
+    lineBetween ( config.borderSize, yCoord ) ( farBorderPosition config, yCoord )
 
 
 lineBetween : Coordinates -> Coordinates -> Svg Msg
@@ -117,7 +123,7 @@ gridCells model =
             ( 0, 0 )
 
         bottomRightCellCoordinate =
-            (ViewConfig.visibleCells config model.zoomLevel) - (1)
+            (ViewConfig.visibleCells config) - (1)
 
         bottomRightCell =
             ( bottomRightCellCoordinate, bottomRightCellCoordinate )
@@ -125,17 +131,26 @@ gridCells model =
         isVisible =
             Cell.isVisible topLeftCell bottomRightCell
 
+        config =
+            model.viewConfig
+
         drawCellRect =
             \( x, y ) ->
-                cellRectAt ( config.borderSize + (config.cellSize * x), config.borderSize + (config.cellSize * y) )
+                -- TODO: make cellRectAt just take config and (x,y) as args,
+                -- and do calculation there?
+                cellRectAt
+                    config
+                    ( config.borderSize + (config.cellSize * x)
+                    , config.borderSize + (config.cellSize * y)
+                    )
     in
         Set.filter isVisible model.livingCells
             |> Set.toList
             |> List.map drawCellRect
 
 
-cellRectAt : Coordinates -> Svg Msg
-cellRectAt ( rectX, rectY ) =
+cellRectAt : ViewConfig -> Coordinates -> Svg Msg
+cellRectAt config ( rectX, rectY ) =
     rect
         [ x (toString rectX)
         , y (toString rectY)

@@ -8,8 +8,8 @@ type alias Coordinates =
     ( Int, Int )
 
 
-cellAtCoordinates : ViewConfig -> Float -> Coordinates -> Maybe Cell
-cellAtCoordinates config zoomLevel ( x, y ) =
+cellAtCoordinates : ViewConfig -> Coordinates -> Maybe Cell
+cellAtCoordinates config ( x, y ) =
     let
         cellX =
             x // config.cellSize
@@ -18,7 +18,7 @@ cellAtCoordinates config zoomLevel ( x, y ) =
             y // config.cellSize
 
         gameSize =
-            config.cellSize * visibleCells config zoomLevel
+            config.cellSize * visibleCells config
 
         outOfBounds =
             \( x, y ) ->

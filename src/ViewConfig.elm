@@ -5,27 +5,29 @@ type alias ViewConfig =
     { borderSize : Int
     , cellSize : Int
     , svgSize : Int
+    , zoomLevel : Float
     }
 
 
-config : ViewConfig
-config =
+defaultConfig : ViewConfig
+defaultConfig =
     { borderSize = 5
     , cellSize = 10
     , svgSize = 500
+    , zoomLevel = 1
     }
 
 
-viewBoxSize : ViewConfig -> Float -> Float
-viewBoxSize config zoomLevel =
-    (toFloat config.svgSize) / zoomLevel
+viewBoxSize : ViewConfig -> Float
+viewBoxSize config =
+    (toFloat config.svgSize) / config.zoomLevel
 
 
-visibleCells : ViewConfig -> Float -> Int
-visibleCells config zoomLevel =
-    floor (((viewBoxSize config zoomLevel) - toFloat (config.borderSize * 2)) / toFloat config.cellSize)
+visibleCells : ViewConfig -> Int
+visibleCells config =
+    floor (((viewBoxSize config) - toFloat (config.borderSize * 2)) / toFloat config.cellSize)
 
 
-farBorderPosition : ViewConfig -> Float -> Int
-farBorderPosition config zoomLevel =
-    (config.cellSize * visibleCells config zoomLevel) + config.borderSize
+farBorderPosition : ViewConfig -> Int
+farBorderPosition config =
+    (config.cellSize * visibleCells config) + config.borderSize
