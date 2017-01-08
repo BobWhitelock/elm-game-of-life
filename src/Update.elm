@@ -1,6 +1,5 @@
 module Update exposing (update)
 
-import Set exposing (Set)
 import Model exposing (Model)
 import Cell exposing (..)
 import Coordinates exposing (Coordinates)
