@@ -35,17 +35,25 @@ handleMouseClick model coordinates =
     let
         maybeCell =
             Coordinates.cellAtCoordinates config coordinates
+
+        modelWithMouseClick =
+            updateLastMouseClick model coordinates
     in
         if model.running then
-            ( model, Cmd.none )
+            ( modelWithMouseClick, Cmd.none )
         else
             case maybeCell of
                 Just cell ->
-                    ( { model
+                    ( { modelWithMouseClick
                         | livingCells = Utils.toggleIn model.livingCells cell
                       }
                     , Cmd.none
                     )
 
                 Nothing ->
-                    ( model, Cmd.none )
+                    ( modelWithMouseClick, Cmd.none )
+
+
+updateLastMouseClick : Model -> Coordinates -> Model
+updateLastMouseClick model coordinates =
+    { model | lastMouseClick = coordinates }

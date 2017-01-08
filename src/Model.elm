@@ -9,6 +9,7 @@ import Coordinates exposing (Coordinates)
 type alias Model =
     { livingCells : Set Cell
     , running : Bool
+    , lastMouseClick : Coordinates
     }
 
 
@@ -23,6 +24,7 @@ init _ =
                 , ( 2, 2 )
                 ]
       , running = False
+      , lastMouseClick = ( 0, 0 )
       }
     , Cmd.none
     )
