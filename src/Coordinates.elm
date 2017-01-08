@@ -1,7 +1,7 @@
 module Coordinates exposing (Coordinates, cellAtCoordinates)
 
 import Cell exposing (Cell)
-import ViewConfig exposing (ViewConfig)
+import ViewConfig exposing (ViewConfig, visibleCells)
 
 
 type alias Coordinates =
@@ -18,7 +18,7 @@ cellAtCoordinates config ( x, y ) =
             y // config.cellSize
 
         gameSize =
-            config.cellSize * config.visibleCells
+            config.cellSize * visibleCells config
 
         outOfBounds =
             \( x, y ) ->

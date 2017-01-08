@@ -15,17 +15,21 @@ import ViewConfig exposing (config)
 
 gameView : Model -> Html Msg
 gameView model =
-    svg
-        [ width worldViewSizeString
-        , height worldViewSizeString
-        , viewBox viewBoxSizeString
-        , on "click" (Json.map MouseClick relativeCoordinates)
-        ]
-        (List.concat
-            [ gridLines
-            , gridCells model.livingCells
+    let
+        svgSize =
+            toString config.svgSize
+    in
+        svg
+            [ width svgSize
+            , height svgSize
+            , viewBox viewBoxSizeString
+            , on "click" (Json.map MouseClick relativeCoordinates)
             ]
-        )
+            (List.concat
+                [ gridLines
+                , gridCells model.livingCells
+                ]
+            )
 
 
 relativeCoordinates : Json.Decoder Coordinates
@@ -41,8 +45,8 @@ relativeCoordinates =
         coordinatesFromOffsetPosition =
             \x ->
                 \y ->
-                    ( (x // scale) - config.borderSize
-                    , (y // scale) - config.borderSize
+                    ( floor ((toFloat x / ViewConfig.scale) - toFloat config.borderSize)
+                    , floor ((toFloat y / ViewConfig.scale) - toFloat config.borderSize)
                     )
     in
         Json.map2 coordinatesFromOffsetPosition offsetX offsetY
@@ -53,40 +57,25 @@ farBorderPosition =
     ViewConfig.farBorderPosition config
 
 
-scale : Int
-scale =
-    2
-
-
 lineWidth : String
 lineWidth =
     "0.5"
-
-
-viewBoxSize : Int
-viewBoxSize =
-    (config.visibleCells * config.cellSize) + (config.borderSize * 2)
 
 
 viewBoxSizeString : String
 viewBoxSizeString =
     let
         sizeString =
-            toString viewBoxSize
+            toString (ViewConfig.viewBoxSize config)
     in
         "0 0 " ++ sizeString ++ " " ++ sizeString
-
-
-worldViewSizeString : String
-worldViewSizeString =
-    toString (scale * viewBoxSize)
 
 
 gridLines : List (Svg Msg)
 gridLines =
     let
         lineRange =
-            List.range 0 config.visibleCells
+            List.range 0 (ViewConfig.visibleCells config)
 
         linesUsing =
             \lineFunction ->
@@ -128,7 +117,7 @@ gridCells cells =
             ( 0, 0 )
 
         bottomRightCellCoordinate =
-            config.visibleCells - (1)
+            (ViewConfig.visibleCells config) - (1)
 
         bottomRightCell =
             ( bottomRightCellCoordinate, bottomRightCellCoordinate )
