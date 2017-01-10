@@ -6,7 +6,7 @@ import Html.Events exposing (onClick)
 import Messages exposing (..)
 import Model exposing (Model)
 import GameView
-import ViewConfig
+import ZoomLevel
 
 
 view : Model -> Html Msg
@@ -25,12 +25,12 @@ view model =
                 [ text runButtonText ]
             , button
                 [ onClick ZoomIn
-                , disabled (model.viewConfig.zoomLevel >= ViewConfig.maximumZoomLevel)
+                , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
                 ]
                 [ text "+" ]
             , button
                 [ onClick ZoomOut
-                , disabled (model.viewConfig.zoomLevel <= ViewConfig.minimumZoomLevel)
+                , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
                 ]
                 [ text "-" ]
             ]

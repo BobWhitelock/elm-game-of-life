@@ -11,6 +11,7 @@ import Model exposing (Model)
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
 import ViewConfig exposing (ViewConfig)
+import ZoomLevel
 
 
 gameView : Model -> Html Msg
@@ -45,11 +46,14 @@ relativeCoordinates config =
         offsetY =
             Json.field "offsetY" Json.int
 
+        scale =
+            ZoomLevel.scale config.zoomLevel
+
         coordinatesFromOffsetPosition =
             \x ->
                 \y ->
-                    ( floor ((toFloat x / config.zoomLevel) - toFloat config.borderSize)
-                    , floor ((toFloat y / config.zoomLevel) - toFloat config.borderSize)
+                    ( floor ((toFloat x / scale) - toFloat config.borderSize)
+                    , floor ((toFloat y / scale) - toFloat config.borderSize)
                     )
     in
         Json.map2 coordinatesFromOffsetPosition offsetX offsetY

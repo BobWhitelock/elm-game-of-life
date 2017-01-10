@@ -1,11 +1,13 @@
 module ViewConfig exposing (..)
 
+import ZoomLevel exposing (ZoomLevel)
+
 
 type alias ViewConfig =
     { borderSize : Int
     , cellSize : Int
     , svgSize : Int
-    , zoomLevel : Float
+    , zoomLevel : ZoomLevel
     }
 
 
@@ -14,13 +16,13 @@ defaultConfig =
     { borderSize = 5
     , cellSize = 10
     , svgSize = 500
-    , zoomLevel = 1
+    , zoomLevel = ZoomLevel.initial
     }
 
 
 viewBoxSize : ViewConfig -> Float
 viewBoxSize config =
-    (toFloat config.svgSize) / config.zoomLevel
+    (toFloat config.svgSize) / ZoomLevel.scale config.zoomLevel
 
 
 visibleCells : ViewConfig -> Int

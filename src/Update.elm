@@ -4,8 +4,8 @@ import Model exposing (Model)
 import Cell exposing (..)
 import Coordinates exposing (Coordinates)
 import Messages exposing (..)
-import ViewConfig
 import Utils
+import ZoomLevel exposing (ZoomLevel)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -29,39 +29,25 @@ update msg model =
             handleMouseClick model coordinates
 
         ZoomOut ->
-            let
-                modelWithNewZoomLevel =
-                    multiplyZoomLevel 0.5 model
-            in
-                if (modelWithNewZoomLevel.viewConfig.zoomLevel >= ViewConfig.minimumZoomLevel) then
-                    ( modelWithNewZoomLevel, Cmd.none )
-                else
-                    ( model, Cmd.none )
+            ( zoom ZoomLevel.zoomOut model, Cmd.none )
 
         ZoomIn ->
-            let
-                modelWithNewZoomLevel =
-                    multiplyZoomLevel 2 model
-            in
-                if (modelWithNewZoomLevel.viewConfig.zoomLevel <= ViewConfig.maximumZoomLevel) then
-                    ( modelWithNewZoomLevel, Cmd.none )
-                else
-                    ( model, Cmd.none )
+            ( zoom ZoomLevel.zoomIn model, Cmd.none )
 
 
-multiplyZoomLevel : Float -> Model -> Model
-multiplyZoomLevel multiplier currentModel =
+zoom : (ZoomLevel -> ZoomLevel) -> Model -> Model
+zoom changeZoom model =
     let
         currentViewConfig =
-            currentModel.viewConfig
+            model.viewConfig
 
         newViewConfig =
             { currentViewConfig
                 | zoomLevel =
-                    currentViewConfig.zoomLevel * multiplier
+                    changeZoom currentViewConfig.zoomLevel
             }
     in
-        { currentModel | viewConfig = newViewConfig }
+        { model | viewConfig = newViewConfig }
 
 
 handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
