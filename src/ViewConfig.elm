@@ -31,3 +31,13 @@ visibleCells config =
 farBorderPosition : ViewConfig -> Int
 farBorderPosition config =
     (config.cellSize * visibleCells config) + config.borderSize
+
+
+minimumZoomLevel : Float
+minimumZoomLevel =
+    0.125
+
+
+maximumZoomLevel : Float
+maximumZoomLevel =
+    2

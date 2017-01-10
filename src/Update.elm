@@ -29,10 +29,24 @@ update msg model =
             handleMouseClick model coordinates
 
         ZoomOut ->
-            ( multiplyZoomLevel 0.5 model, Cmd.none )
+            let
+                modelWithNewZoomLevel =
+                    multiplyZoomLevel 0.5 model
+            in
+                if (modelWithNewZoomLevel.viewConfig.zoomLevel >= ViewConfig.minimumZoomLevel) then
+                    ( modelWithNewZoomLevel, Cmd.none )
+                else
+                    ( model, Cmd.none )
 
         ZoomIn ->
-            ( multiplyZoomLevel 2 model, Cmd.none )
+            let
+                modelWithNewZoomLevel =
+                    multiplyZoomLevel 2 model
+            in
+                if (modelWithNewZoomLevel.viewConfig.zoomLevel <= ViewConfig.maximumZoomLevel) then
+                    ( modelWithNewZoomLevel, Cmd.none )
+                else
+                    ( model, Cmd.none )
 
 
 multiplyZoomLevel : Float -> Model -> Model

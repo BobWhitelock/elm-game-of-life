@@ -1,10 +1,12 @@
 module View exposing (view)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Messages exposing (..)
 import Model exposing (Model)
 import GameView
+import ViewConfig
 
 
 view : Model -> Html Msg
@@ -22,9 +24,13 @@ view model =
                 [ onClick ToggleRunning ]
                 [ text runButtonText ]
             , button
-                [ onClick ZoomIn ]
+                [ onClick ZoomIn
+                , disabled (model.viewConfig.zoomLevel >= ViewConfig.maximumZoomLevel)
+                ]
                 [ text "+" ]
             , button
-                [ onClick ZoomOut ]
+                [ onClick ZoomOut
+                , disabled (model.viewConfig.zoomLevel <= ViewConfig.minimumZoomLevel)
+                ]
                 [ text "-" ]
             ]
