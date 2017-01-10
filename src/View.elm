@@ -20,17 +20,39 @@ view model =
     in
         div []
             [ GameView.gameView model
-            , button
+            , gameControls model
+            , zoomControls model
+            ]
+
+
+gameControls : Model -> Html Msg
+gameControls model =
+    let
+        runButtonText =
+            if model.running then
+                "Pause"
+            else
+                "Run"
+    in
+        div []
+            [ button
                 [ onClick ToggleRunning ]
                 [ text runButtonText ]
-            , button
-                [ onClick ZoomIn
-                , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
-                ]
-                [ text "+" ]
-            , button
-                [ onClick ZoomOut
-                , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
-                ]
-                [ text "-" ]
             ]
+
+
+zoomControls : Model -> Html Msg
+zoomControls model =
+    div []
+        [ text "Zoom:"
+        , button
+            [ onClick ZoomIn
+            , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
+            ]
+            [ text "+" ]
+        , button
+            [ onClick ZoomOut
+            , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
+            ]
+            [ text "-" ]
+        ]
