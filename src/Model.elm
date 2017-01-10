@@ -10,6 +10,7 @@ import ViewConfig exposing (ViewConfig)
 type alias Model =
     { livingCells : Set Cell
     , running : Bool
+    , ticks : Int
     , lastMouseClick : Coordinates
     , viewConfig : ViewConfig
     }
@@ -26,6 +27,7 @@ init _ =
                 , ( 2, 2 )
                 ]
       , running = False
+      , ticks = 0
       , lastMouseClick = ( 0, 0 )
       , viewConfig = ViewConfig.defaultConfig
       }

@@ -38,6 +38,7 @@ gameControls model =
             [ button
                 [ onClick ToggleRunning ]
                 [ text runButtonText ]
+            , text (toString model.ticks)
             ]
 
 

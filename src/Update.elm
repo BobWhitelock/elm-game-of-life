@@ -21,6 +21,7 @@ update msg model =
         Tick _ ->
             ( { model
                 | livingCells = nextLivingCells model.livingCells
+                , ticks = model.ticks + 1
               }
             , Cmd.none
             )
