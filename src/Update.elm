@@ -6,6 +6,7 @@ import Coordinates exposing (Coordinates)
 import Messages exposing (..)
 import Utils
 import ZoomLevel exposing (ZoomLevel)
+import TickPeriod
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,6 +35,20 @@ update msg model =
 
         ZoomIn ->
             ( zoom ZoomLevel.zoomIn model, Cmd.none )
+
+        DecreaseSpeed ->
+            ( { model
+                | tickPeriod = TickPeriod.decreaseSpeedIfPossible model.tickPeriod
+              }
+            , Cmd.none
+            )
+
+        IncreaseSpeed ->
+            ( { model
+                | tickPeriod = TickPeriod.increaseSpeedIfPossible model.tickPeriod
+              }
+            , Cmd.none
+            )
 
 
 zoom : (ZoomLevel -> ZoomLevel) -> Model -> Model

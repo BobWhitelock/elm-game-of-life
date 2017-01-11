@@ -7,6 +7,7 @@ import Messages exposing (..)
 import Model exposing (Model)
 import GameView
 import ZoomLevel
+import TickPeriod
 
 
 view : Model -> Html Msg
@@ -20,9 +21,32 @@ view model =
     in
         div []
             [ GameView.gameView model
+            , gameInfo model
             , gameControls model
             , zoomControls model
             ]
+
+
+gameInfo : Model -> Html Msg
+gameInfo model =
+    let
+        iterationNumber =
+            toString (model.ticks)
+
+        frequency =
+            TickPeriod.frequency model.tickPeriod
+                |> floor
+                |> toString
+
+        info =
+            -- TODO: handle singular case for 'iterations'.
+            "Iteration "
+                ++ iterationNumber
+                ++ " | "
+                ++ frequency
+                ++ " iterations / second"
+    in
+        div [] [ text info ]
 
 
 gameControls : Model -> Html Msg
@@ -36,9 +60,18 @@ gameControls model =
     in
         div []
             [ button
+                [ onClick DecreaseSpeed
+                , disabled (TickPeriod.isMinimumSpeed model.tickPeriod)
+                ]
+                [ text "<<" ]
+            , button
                 [ onClick ToggleRunning ]
                 [ text runButtonText ]
-            , text (toString model.ticks)
+            , button
+                [ onClick IncreaseSpeed
+                , disabled (TickPeriod.isMaximumSpeed model.tickPeriod)
+                ]
+                [ text ">>" ]
             ]
 
 

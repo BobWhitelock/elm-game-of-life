@@ -10,3 +10,5 @@ type Msg
     | MouseClick Coordinates
     | ZoomOut
     | ZoomIn
+    | DecreaseSpeed
+    | IncreaseSpeed

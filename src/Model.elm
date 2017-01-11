@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Set exposing (Set)
+import Time exposing (Time)
 import Messages exposing (Msg(..))
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
@@ -11,6 +12,7 @@ type alias Model =
     { livingCells : Set Cell
     , running : Bool
     , ticks : Int
+    , tickPeriod : Time
     , lastMouseClick : Coordinates
     , viewConfig : ViewConfig
     }
@@ -28,6 +30,7 @@ init _ =
                 ]
       , running = False
       , ticks = 0
+      , tickPeriod = 200 * Time.millisecond
       , lastMouseClick = ( 0, 0 )
       , viewConfig = ViewConfig.defaultConfig
       }
