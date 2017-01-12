@@ -27,7 +27,7 @@ gameView model =
             [ width svgSize
             , height svgSize
             , viewBox (viewBoxSizeString model)
-            , on "click" (Json.map MouseClick (relativeCoordinates config))
+            , on "click" (Json.map MouseClick (decodeCoordinates config))
             ]
             (List.concat
                 [ gridLines model
@@ -36,27 +36,38 @@ gameView model =
             )
 
 
-relativeCoordinates : ViewConfig -> Json.Decoder Coordinates
-relativeCoordinates config =
-    -- Decode the Coordinates of the current mouse position relative to the origin.
+decodeCoordinates : ViewConfig -> Json.Decoder Coordinates
+decodeCoordinates config =
     let
-        offsetX =
-            Json.field "offsetX" Json.int
+        x =
+            Json.field "offsetX" Json.float
 
-        offsetY =
-            Json.field "offsetY" Json.int
+        y =
+            Json.field "offsetY" Json.float
+    in
+        Json.map2 (coordinatesFromMouseClick config) x y
 
+
+coordinatesFromMouseClick : ViewConfig -> Float -> Float -> Coordinates
+coordinatesFromMouseClick config x y =
+    -- Decode Coordinates from a mouse click relative to the SVG origin, given
+    -- this view configuration.
+    let
         scale =
             ZoomLevel.scale config.zoomLevel
 
-        coordinatesFromOffsetPosition =
-            \x ->
-                \y ->
-                    ( floor ((toFloat x / scale) - toFloat config.borderSize)
-                    , floor ((toFloat y / scale) - toFloat config.borderSize)
-                    )
+        scaledX =
+            x / scale
+
+        scaledY =
+            y / scale
+
+        border =
+            toFloat config.borderSize
     in
-        Json.map2 coordinatesFromOffsetPosition offsetX offsetY
+        ( floor (scaledX - border)
+        , floor (scaledY - border)
+        )
 
 
 farBorderPosition : ViewConfig -> Int
