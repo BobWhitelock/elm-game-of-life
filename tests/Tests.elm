@@ -2,6 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import CellTests
+import CoordinatesTests
 import ZoomLevelTests
 
 
@@ -12,5 +13,6 @@ all : Test
 all =
     describe "App"
         [ CellTests.all
+        , CoordinatesTests.all
         , ZoomLevelTests.all
         ]
