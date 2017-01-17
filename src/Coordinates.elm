@@ -1,4 +1,4 @@
-module Coordinates exposing (Coordinates, cellAtCoordinates)
+module Coordinates exposing (Coordinates, toCell, fromCell)
 
 import Cell exposing (Cell)
 import ViewConfig exposing (ViewConfig, visibleCells)
@@ -8,8 +8,8 @@ type alias Coordinates =
     ( Int, Int )
 
 
-cellAtCoordinates : ViewConfig -> Coordinates -> Maybe Cell
-cellAtCoordinates config ( x, y ) =
+toCell : ViewConfig -> Coordinates -> Maybe Cell
+toCell config ( x, y ) =
     let
         cellX =
             x // config.cellSize
@@ -28,3 +28,8 @@ cellAtCoordinates config ( x, y ) =
             Nothing
         else
             Just ( cellX, cellY )
+
+
+fromCell : ViewConfig -> Cell -> Coordinates
+fromCell config ( cellX, cellY ) =
+    ( cellX * config.cellSize, cellY * config.cellSize )

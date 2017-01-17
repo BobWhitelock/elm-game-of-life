@@ -70,7 +70,7 @@ handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
 handleMouseClick model coordinates =
     let
         maybeCell =
-            Coordinates.cellAtCoordinates model.viewConfig coordinates
+            Coordinates.toCell model.viewConfig coordinates
 
         modelWithMouseClick =
             updateLastMouseClick model coordinates
