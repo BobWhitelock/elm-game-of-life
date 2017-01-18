@@ -135,13 +135,16 @@ gridCells : Model -> List (Svg Msg)
 gridCells model =
     let
         topLeftCell =
-            ( 0, 0 )
+            config.topLeft
 
-        bottomRightCellCoordinate =
-            (ViewConfig.visibleCells config) - (1)
+        ( topLeftX, topLeftY ) =
+            topLeftCell
+
+        cellOffset =
+            (ViewConfig.visibleCells config) - 1
 
         bottomRightCell =
-            ( bottomRightCellCoordinate, bottomRightCellCoordinate )
+            ( topLeftX + cellOffset, topLeftY + cellOffset )
 
         isVisible =
             Cell.isVisible topLeftCell bottomRightCell
@@ -150,14 +153,8 @@ gridCells model =
             model.viewConfig
 
         drawCellRect =
-            \( x, y ) ->
-                -- TODO: make cellRectAt just take config and (x,y) as args,
-                -- and do calculation there?
-                cellRectAt
-                    config
-                    ( config.borderSize + (config.cellSize * x)
-                    , config.borderSize + (config.cellSize * y)
-                    )
+            \cell ->
+                cellRectAt config (Coordinates.fromCell config cell)
     in
         Set.filter isVisible model.livingCells
             |> Set.toList
@@ -167,8 +164,8 @@ gridCells model =
 cellRectAt : ViewConfig -> Coordinates -> Svg Msg
 cellRectAt config ( rectX, rectY ) =
     rect
-        [ x (toString rectX)
-        , y (toString rectY)
+        [ x (toString (rectX + config.borderSize))
+        , y (toString (rectY + config.borderSize))
         , width (toString config.cellSize)
         , height (toString config.cellSize)
         , strokeWidth lineWidth

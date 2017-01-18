@@ -1,6 +1,7 @@
 module ViewConfig exposing (..)
 
 import ZoomLevel exposing (ZoomLevel)
+import Cell exposing (Cell)
 
 
 type alias ViewConfig =
@@ -8,6 +9,7 @@ type alias ViewConfig =
     , cellSize : Int
     , svgSize : Int
     , zoomLevel : ZoomLevel
+    , topLeft : Cell
     }
 
 
@@ -17,6 +19,7 @@ defaultConfig =
     , cellSize = 10
     , svgSize = 500
     , zoomLevel = ZoomLevel.initial
+    , topLeft = ( -20, -20 )
     }
 
 

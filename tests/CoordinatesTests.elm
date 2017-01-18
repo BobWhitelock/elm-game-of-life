@@ -4,7 +4,7 @@ import Test exposing (..)
 import Fuzz
 import Expect
 import Coordinates exposing (..)
-import ViewConfig exposing (defaultConfig)
+import ViewConfig exposing (ViewConfig, defaultConfig)
 import ZoomLevel
 
 
@@ -21,15 +21,15 @@ all =
                             ( 25, 36 )
 
                         cell =
-                            toCell defaultConfig coordinates
+                            toCell testConfig coordinates
                     in
-                        Expect.equal (Just ( 2, 3 )) cell
+                        Expect.equal (Just ( 12, 13 )) cell
             , test "when Coordinates outside bounds it returns Nothing" <|
                 \() ->
                     let
                         coordinateOnEdge =
-                            defaultConfig.cellSize
-                                * ViewConfig.visibleCells defaultConfig
+                            testConfig.cellSize
+                                * ViewConfig.visibleCells testConfig
 
                         coordinates =
                             [ ( -6, -12 )
@@ -41,7 +41,7 @@ all =
                             List.repeat (List.length coordinates) Nothing
 
                         cells =
-                            List.map (toCell defaultConfig) coordinates
+                            List.map (toCell testConfig) coordinates
                     in
                         Expect.equal nothings cells
             , fuzz2 Fuzz.int
@@ -63,7 +63,7 @@ all =
                         containingCellCoordinates =
                             let
                                 rounded =
-                                    \a -> a - (a % defaultConfig.cellSize)
+                                    \a -> a - (a % testConfig.cellSize)
 
                                 x =
                                     rounded xCoordinate
@@ -73,8 +73,8 @@ all =
                             in
                                 ( x, y )
                     in
-                        toCell defaultConfig coordinates
-                            |> Maybe.map (fromCell defaultConfig)
+                        toCell testConfig coordinates
+                            |> Maybe.map (fromCell testConfig)
                             |> (flip List.member) [ Nothing, Just containingCellCoordinates ]
                             |> Expect.true failedMessage
             ]
@@ -83,13 +83,13 @@ all =
                 \() ->
                     let
                         cells =
-                            [ ( 0, 0 ), ( 3, 5 ), ( -100, 123 ) ]
+                            [ ( 10, 10 ), ( 13, 15 ), ( -90, 133 ) ]
 
                         expectedCoordinates =
                             [ ( 0, 0 ), ( 30, 50 ), ( -1000, 1230 ) ]
 
                         resultingCoordinates =
-                            List.map (fromCell defaultConfig) cells
+                            List.map (fromCell testConfig) cells
                     in
                         Expect.equal expectedCoordinates resultingCoordinates
             , fuzz2 Fuzz.int
@@ -107,9 +107,14 @@ all =
                                 ++ " |> toCell to be Nothing or Just "
                                 ++ toString cell
                     in
-                        fromCell defaultConfig cell
-                            |> toCell defaultConfig
+                        fromCell testConfig cell
+                            |> toCell testConfig
                             |> (flip List.member) [ Nothing, Just cell ]
                             |> Expect.true failedMessage
             ]
         ]
+
+
+testConfig : ViewConfig
+testConfig =
+    { defaultConfig | topLeft = ( 10, 10 ) }

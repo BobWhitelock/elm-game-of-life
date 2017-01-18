@@ -11,11 +11,14 @@ type alias Coordinates =
 toCell : ViewConfig -> Coordinates -> Maybe Cell
 toCell config ( x, y ) =
     let
+        ( topLeftX, topLeftY ) =
+            config.topLeft
+
         cellX =
-            x // config.cellSize
+            topLeftX + (x // config.cellSize)
 
         cellY =
-            y // config.cellSize
+            topLeftY + (y // config.cellSize)
 
         gameSize =
             config.cellSize * visibleCells config
@@ -32,4 +35,10 @@ toCell config ( x, y ) =
 
 fromCell : ViewConfig -> Cell -> Coordinates
 fromCell config ( cellX, cellY ) =
-    ( cellX * config.cellSize, cellY * config.cellSize )
+    let
+        ( topLeftX, topLeftY ) =
+            config.topLeft
+    in
+        ( (cellX - topLeftX) * config.cellSize
+        , (cellY - topLeftY) * config.cellSize
+        )
