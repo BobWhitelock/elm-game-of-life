@@ -10,5 +10,13 @@ type Msg
     | MouseClick Coordinates
     | ZoomOut
     | ZoomIn
+    | Pan Direction
     | DecreaseSpeed
     | IncreaseSpeed
+
+
+type Direction
+    = Up
+    | Down
+    | Left
+    | Right

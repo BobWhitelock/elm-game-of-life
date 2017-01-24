@@ -47,6 +47,14 @@ update msg model =
             , Cmd.none
             )
 
+        Pan direction ->
+            ( { model
+                | viewConfig =
+                    UpdateViewConfig.pan direction model.viewConfig
+              }
+            , Cmd.none
+            )
+
         DecreaseSpeed ->
             ( { model
                 | tickPeriod = TickPeriod.decreaseSpeedIfPossible model.tickPeriod

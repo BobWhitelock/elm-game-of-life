@@ -23,6 +23,7 @@ view model =
             [ GameView.gameView model
             , gameInfo model
             , gameControls model
+            , panControls model
             , zoomControls model
             ]
 
@@ -73,6 +74,25 @@ gameControls model =
                 ]
                 [ text ">>" ]
             ]
+
+
+panControls : Model -> Html Msg
+panControls model =
+    div []
+        [ text "Pan:"
+        , button
+            [ onClick (Pan Up) ]
+            [ text "/\\" ]
+        , button
+            [ onClick (Pan Down) ]
+            [ text "\\/" ]
+        , button
+            [ onClick (Pan Left) ]
+            [ text "<" ]
+        , button
+            [ onClick (Pan Right) ]
+            [ text ">" ]
+        ]
 
 
 zoomControls : Model -> Html Msg

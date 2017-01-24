@@ -1,7 +1,8 @@
-module UpdateViewConfig exposing (zoom)
+module UpdateViewConfig exposing (zoom, pan)
 
 import ViewConfig exposing (ViewConfig)
 import ZoomLevel exposing (ZoomLevel)
+import Messages exposing (Direction(..))
 
 
 zoom : (ZoomLevel -> ZoomLevel) -> ViewConfig -> ViewConfig
@@ -36,3 +37,34 @@ zoom changeZoom viewConfig =
             }
     in
         newViewConfig
+
+
+pan : Direction -> ViewConfig -> ViewConfig
+pan direction viewConfig =
+    let
+        visibleCells =
+            ViewConfig.visibleCells viewConfig
+
+        topLeftShift =
+            -- Whichever direction we pan in, we want to shift visibleCells/2
+            -- in that direction.
+            visibleCells // 2
+
+        ( x, y ) =
+            viewConfig.topLeft
+
+        newTopLeft =
+            case direction of
+                Up ->
+                    ( x, y - topLeftShift )
+
+                Down ->
+                    ( x, y + topLeftShift )
+
+                Left ->
+                    ( x - topLeftShift, y )
+
+                Right ->
+                    ( x + topLeftShift, y )
+    in
+        { viewConfig | topLeft = newTopLeft }

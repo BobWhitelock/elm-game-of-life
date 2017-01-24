@@ -5,6 +5,8 @@ import Expect
 import UpdateViewConfig exposing (..)
 import ViewConfig exposing (ViewConfig)
 import ZoomLevel
+import Messages exposing (Direction(..))
+import Coordinates exposing (Coordinates)
 
 
 all : Test
@@ -36,6 +38,36 @@ all =
                     in
                         Expect.equal ( -28, -38 ) newTopLeftCell
             ]
+        , describe "pan"
+            [ test "when Up, topLeft is shifted 50% up" <|
+                \() ->
+                    let
+                        newTopLeftCell =
+                            topLeftAfterPan Up
+                    in
+                        Expect.equal ( -10, -38 ) newTopLeftCell
+            , test "when Down, topLeft is shifted 50% down" <|
+                \() ->
+                    let
+                        newTopLeftCell =
+                            topLeftAfterPan Down
+                    in
+                        Expect.equal ( -10, -2 ) newTopLeftCell
+            , test "when Left, topLeft is shifted 50% left" <|
+                \() ->
+                    let
+                        newTopLeftCell =
+                            topLeftAfterPan Left
+                    in
+                        Expect.equal ( -28, -20 ) newTopLeftCell
+            , test "when Right, topLeft is shifted 50% right" <|
+                \() ->
+                    let
+                        newTopLeftCell =
+                            topLeftAfterPan Right
+                    in
+                        Expect.equal ( 8, -20 ) newTopLeftCell
+            ]
         ]
 
 
@@ -53,3 +85,8 @@ viewConfig =
             , borderSize = 0
             , svgSize = 360
         }
+
+
+topLeftAfterPan : Direction -> Coordinates
+topLeftAfterPan direction =
+    pan direction viewConfig |> .topLeft
