@@ -7,6 +7,7 @@ import Messages exposing (..)
 import Utils
 import ZoomLevel exposing (ZoomLevel)
 import TickPeriod
+import UpdateViewConfig
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -31,10 +32,20 @@ update msg model =
             handleMouseClick model coordinates
 
         ZoomOut ->
-            ( zoom ZoomLevel.zoomOut model, Cmd.none )
+            ( { model
+                | viewConfig =
+                    UpdateViewConfig.zoom ZoomLevel.zoomOut model.viewConfig
+              }
+            , Cmd.none
+            )
 
         ZoomIn ->
-            ( zoom ZoomLevel.zoomIn model, Cmd.none )
+            ( { model
+                | viewConfig =
+                    UpdateViewConfig.zoom ZoomLevel.zoomIn model.viewConfig
+              }
+            , Cmd.none
+            )
 
         DecreaseSpeed ->
             ( { model
@@ -49,21 +60,6 @@ update msg model =
               }
             , Cmd.none
             )
-
-
-zoom : (ZoomLevel -> ZoomLevel) -> Model -> Model
-zoom changeZoom model =
-    let
-        currentViewConfig =
-            model.viewConfig
-
-        newViewConfig =
-            { currentViewConfig
-                | zoomLevel =
-                    changeZoom currentViewConfig.zoomLevel
-            }
-    in
-        { model | viewConfig = newViewConfig }
 
 
 handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
