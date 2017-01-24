@@ -39,28 +39,28 @@ all =
                         Expect.equal ( -28, -38 ) newTopLeftCell
             ]
         , describe "pan"
-            [ test "when Up, topLeft is shifted 50% up" <|
+            [ test "when Up, topLeft is shifted up by panShift" <|
                 \() ->
                     let
                         newTopLeftCell =
                             topLeftAfterPan Up
                     in
                         Expect.equal ( -10, -38 ) newTopLeftCell
-            , test "when Down, topLeft is shifted 50% down" <|
+            , test "when Down, topLeft is shifted down by panShift" <|
                 \() ->
                     let
                         newTopLeftCell =
                             topLeftAfterPan Down
                     in
                         Expect.equal ( -10, -2 ) newTopLeftCell
-            , test "when Left, topLeft is shifted 50% left" <|
+            , test "when Left, topLeft is shifted left by panShift" <|
                 \() ->
                     let
                         newTopLeftCell =
                             topLeftAfterPan Left
                     in
                         Expect.equal ( -28, -20 ) newTopLeftCell
-            , test "when Right, topLeft is shifted 50% right" <|
+            , test "when Right, topLeft is shifted right by panShift" <|
                 \() ->
                     let
                         newTopLeftCell =
@@ -84,6 +84,7 @@ viewConfig =
                 -- round numbers in tests.
             , borderSize = 0
             , svgSize = 360
+            , panShift = 0.5
         }
 
 

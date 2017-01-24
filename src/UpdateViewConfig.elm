@@ -46,9 +46,12 @@ pan direction viewConfig =
             ViewConfig.visibleCells viewConfig
 
         topLeftShift =
-            -- Whichever direction we pan in, we want to shift visibleCells/2
-            -- in that direction.
-            visibleCells // 2
+            -- Whichever direction we pan in, we want to shift `visibleCells` *
+            -- `panShift` in that direction.
+            visibleCells
+                |> toFloat
+                |> (*) viewConfig.panShift
+                |> floor
 
         ( x, y ) =
             viewConfig.topLeft

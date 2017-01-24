@@ -10,6 +10,7 @@ type alias ViewConfig =
     , svgSize : Int
     , zoomLevel : ZoomLevel
     , topLeft : Cell
+    , panShift : Float
     }
 
 
@@ -20,6 +21,7 @@ defaultConfig =
     , svgSize = 500
     , zoomLevel = ZoomLevel.initial
     , topLeft = ( -20, -20 )
+    , panShift = 0.1
     }
 
 
