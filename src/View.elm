@@ -8,6 +8,7 @@ import Model exposing (Model)
 import GameView
 import ZoomLevel
 import TickPeriod
+import Styles
 
 
 view : Model -> Html Msg
@@ -19,35 +20,62 @@ view model =
             else
                 "Run"
     in
-        div []
-            [ GameView.gameView model
-            , gameInfo model
-            , gameControls model
-            , panControls model
-            , zoomControls model
+        div
+            [ Styles.windowWrapper ]
+            [ div [ Styles.centredPage ]
+                [ game model
+                , controlPanel model
+                ]
             ]
 
 
-gameInfo : Model -> Html Msg
-gameInfo model =
-    let
-        iterationNumber =
-            toString (model.ticks)
+game model =
+    div [ Styles.gameColumn ]
+        [ div [] [ panUpButton ]
+        , div
+            [ Styles.game
+            ]
+            [ div [ Styles.sidePanButton ] [ panLeftButton ]
+            , GameView.gameView model
+            , div [ Styles.sidePanButton ] [ panRightButton ]
+            ]
+        , div [] [ panDownButton ]
+        ]
 
-        frequency =
-            TickPeriod.frequency model.tickPeriod
-                |> floor
-                |> toString
 
-        info =
-            -- TODO: handle singular case for 'iterations'.
-            "Iteration "
-                ++ iterationNumber
-                ++ " | "
-                ++ frequency
-                ++ " iterations / second"
-    in
-        div [] [ text info ]
+panUpButton =
+    panButton Up "/\\"
+
+
+panDownButton =
+    panButton Down "\\/"
+
+
+panLeftButton =
+    panButton Left "<"
+
+
+panRightButton =
+    panButton Right ">"
+
+
+panButton direction icon =
+    button
+        [ onClick (Pan direction) ]
+        [ text icon ]
+
+
+controlPanel model =
+    div
+        [ Styles.controlPanelColumn
+        ]
+        [ div
+            [ Styles.controlPanelInside model.viewConfig
+            ]
+            [ gameControls model
+            , zoomControls model
+            ]
+        ]
 
 
 gameControls : Model -> Html Msg
@@ -59,54 +87,64 @@ gameControls model =
             else
                 "Run"
     in
-        div []
-            [ button
-                [ onClick DecreaseSpeed
-                , disabled (TickPeriod.isMinimumSpeed model.tickPeriod)
+        div [ Styles.controlPanelSection ]
+            [ iterationInfo model
+            , div []
+                [ button
+                    [ onClick DecreaseSpeed
+                    , disabled (TickPeriod.isMinimumSpeed model.tickPeriod)
+                    ]
+                    [ text "<<" ]
+                , button
+                    [ onClick ToggleRunning ]
+                    [ text runButtonText ]
+                , button
+                    [ onClick IncreaseSpeed
+                    , disabled (TickPeriod.isMaximumSpeed model.tickPeriod)
+                    ]
+                    [ text ">>" ]
                 ]
-                [ text "<<" ]
-            , button
-                [ onClick ToggleRunning ]
-                [ text runButtonText ]
-            , button
-                [ onClick IncreaseSpeed
-                , disabled (TickPeriod.isMaximumSpeed model.tickPeriod)
-                ]
-                [ text ">>" ]
+            , iterationFrequencyInfo model
             ]
 
 
-panControls : Model -> Html Msg
-panControls model =
-    div []
-        [ text "Pan:"
-        , button
-            [ onClick (Pan Up) ]
-            [ text "/\\" ]
-        , button
-            [ onClick (Pan Down) ]
-            [ text "\\/" ]
-        , button
-            [ onClick (Pan Left) ]
-            [ text "<" ]
-        , button
-            [ onClick (Pan Right) ]
-            [ text ">" ]
-        ]
+iterationInfo model =
+    let
+        iterationNumber =
+            toString (model.ticks)
+    in
+        div []
+            [ text ("Iteration " ++ iterationNumber)
+            ]
+
+
+iterationFrequencyInfo model =
+    let
+        frequency =
+            TickPeriod.frequency model.tickPeriod
+                |> floor
+                |> toString
+    in
+        div []
+            -- TODO: handle singular case for 'iterations'.
+            [ text (frequency ++ " iterations / second")
+            ]
 
 
 zoomControls : Model -> Html Msg
 zoomControls model =
-    div []
-        [ text "Zoom:"
-        , button
-            [ onClick ZoomIn
-            , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
+    div [ Styles.controlPanelSection ]
+        [ div []
+            [ text "Zoom:"
+            , button
+                [ onClick ZoomIn
+                , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
+                ]
+                [ text "+" ]
+            , button
+                [ onClick ZoomOut
+                , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
+                ]
+                [ text "-" ]
             ]
-            [ text "+" ]
-        , button
-            [ onClick ZoomOut
-            , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
-            ]
-            [ text "-" ]
         ]

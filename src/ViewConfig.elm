@@ -18,7 +18,7 @@ defaultConfig : ViewConfig
 defaultConfig =
     { borderSize = 5
     , cellSize = 10
-    , svgSize = 500
+    , svgSize = 600
     , zoomLevel = ZoomLevel.initial
     , topLeft = ( -20, -20 )
     , panShift = 0.1

@@ -1,12 +1,6 @@
 body {
-  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
-  font-size: 30px;
+  /* Need this here to prevent user agent stylesheet from adding margin to
+   * body, which bumps up the overall page size so scrollbar is shown. */
   margin: 0;
-  text-align: center;
-  color: #293c4b;
 }
 
-img {
-  margin: 20px 0;
-  max-width: 200px;
-}
