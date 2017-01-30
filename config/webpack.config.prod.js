@@ -1,17 +1,17 @@
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const paths = require('../config/paths');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const getClientEnvironment = require('./env');
+const autoprefixer = require('autoprefixer')
+const webpack = require('webpack')
+const paths = require('../config/paths')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+const getClientEnvironment = require('./env')
 
-const root = process.cwd();
+const root = process.cwd()
 
 module.exports = {
   bail: true,
   entry: [
-    paths.entry
+    paths.entry,
   ],
   output: {
 
@@ -19,17 +19,17 @@ module.exports = {
     path: paths.dist,
 
     // Generated JS files.
-    filename: 'js/[name].[chunkhash:8].js'
+    filename: 'js/[name].[chunkhash:8].js',
   },
   resolveLoader: {
 
     // Look for loaders in own ./node_modules
     root: paths.ownModules,
-    moduleTemplates: [ '*-loader' ]
+    moduleTemplates: [ '*-loader' ],
   },
   resolve: {
     modulesDirectories: [ 'node_modules' ],
-    extensions: [ '', '.js', '.elm' ]
+    extensions: [ '', '.js', '.elm' ],
   },
   module: {
     noParse: /\.elm$/,
@@ -41,12 +41,12 @@ module.exports = {
         // Use the local installation of elm-make
         loader: 'elm-webpack',
         query: {
-          pathToMake: paths.elmMake
-        }
+          pathToMake: paths.elmMake,
+        },
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss')
+        loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss'),
       },
       {
         exclude: [
@@ -54,23 +54,23 @@ module.exports = {
           /\.js$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg$/,
         ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
       },
       // "file" loader for svg
       {
         test: /\.svg$/,
         loader: 'file',
         query: {
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
-      }
-    ]
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
+      },
+    ],
   },
   postcss: function() {
     return [
@@ -79,10 +79,10 @@ module.exports = {
           '>1%',
           'last 4 versions',
           'Firefox ESR',
-          'not ie < 9'
-        ]
-      })
-    ];
+          'not ie < 9',
+        ],
+      }),
+    ]
   },
   plugins: [
     new webpack.DefinePlugin(getClientEnvironment()),
@@ -91,17 +91,17 @@ module.exports = {
     new CleanWebpackPlugin([ 'dist' ], {
       root: root,
       verbose: true,
-      dry: false
+      dry: false,
     }),
 
     // Minify the compiled JavaScript.
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: false
+        warnings: false,
       },
       output: {
-        comments: false
-      }
+        comments: false,
+      },
     }),
 
     new HtmlWebpackPlugin({
@@ -118,10 +118,10 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
 
-    new ExtractTextPlugin('css/[name].[contenthash:8].css')
-  ]
-};
+    new ExtractTextPlugin('css/[name].[contenthash:8].css'),
+  ],
+}

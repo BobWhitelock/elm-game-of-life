@@ -1,8 +1,8 @@
-const autoprefixer = require('autoprefixer');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const paths = require('../config/paths');
-const getClientEnvironment = require('./env');
+const autoprefixer = require('autoprefixer')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const paths = require('../config/paths')
+const getClientEnvironment = require('./env')
 
 module.exports = {
 
@@ -16,7 +16,7 @@ module.exports = {
     // Replacement runtime.
     require.resolve('webpack/hot/dev-server'),
 
-    paths.entry
+    paths.entry,
   ],
   output: {
 
@@ -28,17 +28,17 @@ module.exports = {
     // Generated JS files.
     filename: 'dist/js/bundle.js',
 
-    publicPath: '/'
+    publicPath: '/',
   },
   resolveLoader: {
 
     // Look for loaders in own node_modules
     root: paths.ownModules,
-    moduleTemplates: [ '*-loader' ]
+    moduleTemplates: [ '*-loader' ],
   },
   resolve: {
     modulesDirectories: [ 'node_modules' ],
-    extensions: [ '', '.js', '.elm' ]
+    extensions: [ '', '.js', '.elm' ],
   },
   module: {
     noParse: /\.elm$/,
@@ -46,11 +46,11 @@ module.exports = {
       {
         test: /\.elm$/,
         exclude: [ /elm-stuff/, /node_modules/ ],
-        loader: 'elm-hot!elm-webpack?verbose=true&warn=true&debug=true&pathToMake=' + paths.elmMake
+        loader: 'elm-hot!elm-webpack?verbose=true&warn=true&debug=true&pathToMake=' + paths.elmMake,
       },
       {
         test: /\.css$/,
-        loader: 'style!css!postcss'
+        loader: 'style!css!postcss',
       },
       {
         exclude: [
@@ -58,23 +58,23 @@ module.exports = {
           /\.js$/,
           /\.css$/,
           /\.json$/,
-          /\.svg$/
+          /\.svg$/,
         ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
       },
       // "file" loader for svg
       {
         test: /\.svg$/,
         loader: 'file',
         query: {
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
-      }
-    ]
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
+      },
+    ],
   },
   postcss: function() {
     return [
@@ -83,18 +83,18 @@ module.exports = {
           '>1%',
           'last 4 versions',
           'Firefox ESR',
-          'not ie < 9'
-        ]
-      })
-    ];
+          'not ie < 9',
+        ],
+      }),
+    ]
   },
   plugins: [
     new webpack.DefinePlugin(getClientEnvironment()),
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.template,
-      favicon: paths.favicon
+      favicon: paths.favicon,
     }),
-    new webpack.HotModuleReplacementPlugin()
-  ]
-};
+    new webpack.HotModuleReplacementPlugin(),
+  ],
+}
