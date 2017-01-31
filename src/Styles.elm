@@ -42,7 +42,7 @@ gameColumn =
         [ displayFlex
         , flexDirection column
         , float left
-        , property "justify-content" "center"
+        , justifyContent center
         , width gameColumnWidth
         , height (pct 100)
         ]
@@ -51,7 +51,7 @@ gameColumn =
 game =
     styles
         [ displayFlex
-        , property "justify-content" "center"
+        , justifyContent center
         ]
 
 
@@ -59,7 +59,7 @@ sidePanButton =
     styles
         [ displayFlex
         , flexDirection column
-        , property "justify-content" "center"
+        , justifyContent center
         ]
 
 
@@ -67,7 +67,7 @@ controlPanelColumn =
     styles
         [ displayFlex
         , flexDirection column
-        , property "justify-content" "center"
+        , justifyContent center
         , height (pct 100)
         , marginLeft gameColumnWidth
         ]
@@ -86,7 +86,7 @@ controlPanelSection =
         [ displayFlex
         , flexDirection column
         , position relative
-        , property "justify-content" "center"
+        , justifyContent center
         , height (pct 50)
         ]
 
