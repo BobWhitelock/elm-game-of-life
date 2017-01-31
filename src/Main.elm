@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Json.Encode exposing (Value)
 import Model exposing (Model, init)
 import Update exposing (update)
 import View exposing (view)
@@ -8,7 +9,7 @@ import Messages exposing (Msg)
 import Html exposing (programWithFlags)
 
 
-main : Program String Model Msg
+main : Program Value Model Msg
 main =
     programWithFlags
         { view = view

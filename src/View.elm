@@ -1,10 +1,11 @@
 module View exposing (view)
 
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Messages exposing (..)
-import Model exposing (Model)
+import Model exposing (Model, Icons)
 import GameView
 import ZoomLevel
 import TickPeriod
@@ -31,38 +32,38 @@ view model =
 
 game model =
     div [ Styles.gameColumn ]
-        [ div [] [ panUpButton ]
+        [ div [] [ panUpButton model ]
         , div
             [ Styles.game
             ]
-            [ div [ Styles.sidePanButton ] [ panLeftButton ]
+            [ div [ Styles.sidePanButton ] [ panLeftButton model ]
             , GameView.gameView model
-            , div [ Styles.sidePanButton ] [ panRightButton ]
+            , div [ Styles.sidePanButton ] [ panRightButton model ]
             ]
-        , div [] [ panDownButton ]
+        , div [] [ panDownButton model ]
         ]
 
 
-panUpButton =
-    panButton Up "/\\"
+panUpButton model =
+    panButton model Up "arrow-up"
 
 
-panDownButton =
-    panButton Down "\\/"
+panDownButton model =
+    panButton model Down "arrow-down"
 
 
-panLeftButton =
-    panButton Left "<"
+panLeftButton model =
+    panButton model Left "arrow-left"
 
 
-panRightButton =
-    panButton Right ">"
+panRightButton model =
+    panButton model Right "arrow-right"
 
 
-panButton direction icon =
+panButton model direction iconName =
     button
         [ onClick (Pan direction) ]
-        [ text icon ]
+        [ icon model.icons iconName ]
 
 
 controlPanel model =
@@ -81,11 +82,11 @@ controlPanel model =
 gameControls : Model -> Html Msg
 gameControls model =
     let
-        runButtonText =
+        runButtonIcon =
             if model.running then
-                "Pause"
+                "pause"
             else
-                "Run"
+                "play"
     in
         div [ Styles.controlPanelSection ]
             [ iterationInfo model
@@ -94,15 +95,15 @@ gameControls model =
                     [ onClick DecreaseSpeed
                     , disabled (TickPeriod.isMinimumSpeed model.tickPeriod)
                     ]
-                    [ text "<<" ]
+                    [ icon model.icons "rewind" ]
                 , button
                     [ onClick ToggleRunning ]
-                    [ text runButtonText ]
+                    [ icon model.icons runButtonIcon ]
                 , button
                     [ onClick IncreaseSpeed
                     , disabled (TickPeriod.isMaximumSpeed model.tickPeriod)
                     ]
-                    [ text ">>" ]
+                    [ icon model.icons "fast-forward" ]
                 ]
             , iterationFrequencyInfo model
             ]
@@ -140,11 +141,21 @@ zoomControls model =
                 [ onClick ZoomIn
                 , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
                 ]
-                [ text "+" ]
+                [ icon model.icons "plus" ]
             , button
                 [ onClick ZoomOut
                 , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
                 ]
-                [ text "-" ]
+                [ icon model.icons "minus" ]
             ]
         ]
+
+
+icon : Icons -> String -> Html Msg
+icon icons iconName =
+    let
+        icon =
+            Dict.get iconName icons
+                |> Maybe.withDefault ""
+    in
+        img [ src icon, width 20 ] []
