@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Messages exposing (..)
 import Model exposing (Model, Icons)
 import GameView
-import ZoomLevel
+import ZoomLevel exposing (ZoomLevel)
 import TickPeriod
 import Styles
 
@@ -136,20 +136,20 @@ zoomControls : Model -> Html Msg
 zoomControls model =
     div [ Styles.controlPanelSection ]
         [ div [ Styles.zoomControls ]
-            [ button
-                [ onClick ZoomIn
-                , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
-                , Styles.zoomButton
-                ]
-                [ icon model.icons "plus" ]
-            , button
-                [ onClick ZoomOut
-                , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
-                , Styles.zoomButton
-                ]
-                [ icon model.icons "minus" ]
+            [ zoomButton model ZoomIn "plus" ZoomLevel.isMaximum
+            , zoomButton model ZoomOut "minus" ZoomLevel.isMinimum
             ]
         ]
+
+
+zoomButton : Model -> Msg -> String -> (ZoomLevel -> Bool) -> Html Msg
+zoomButton model msg iconName atLimit =
+    button
+        [ onClick msg
+        , disabled (atLimit model.viewConfig.zoomLevel)
+        , Styles.zoomButton
+        ]
+        [ icon model.icons iconName ]
 
 
 icon : Icons -> String -> Html Msg
