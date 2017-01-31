@@ -135,16 +135,17 @@ iterationFrequencyInfo model =
 zoomControls : Model -> Html Msg
 zoomControls model =
     div [ Styles.controlPanelSection ]
-        [ div []
-            [ text "Zoom:"
-            , button
+        [ div [ Styles.zoomControls ]
+            [ button
                 [ onClick ZoomIn
                 , disabled (ZoomLevel.isMaximum model.viewConfig.zoomLevel)
+                , Styles.zoomButton
                 ]
                 [ icon model.icons "plus" ]
             , button
                 [ onClick ZoomOut
                 , disabled (ZoomLevel.isMinimum model.viewConfig.zoomLevel)
+                , Styles.zoomButton
                 ]
                 [ icon model.icons "minus" ]
             ]

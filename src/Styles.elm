@@ -43,7 +43,7 @@ gameColumn =
         , flexDirection column
         , float left
         , property "justify-content" "center"
-        , width (pct gameColumnWidth)
+        , width gameColumnWidth
         , height (pct 100)
         ]
 
@@ -67,10 +67,9 @@ controlPanelColumn =
     styles
         [ displayFlex
         , flexDirection column
-        , float right
         , property "justify-content" "center"
-        , width (pct controlPanelWidth)
         , height (pct 100)
+        , marginLeft gameColumnWidth
         ]
 
 
@@ -86,14 +85,24 @@ controlPanelSection =
     styles
         [ displayFlex
         , flexDirection column
+        , position relative
         , property "justify-content" "center"
         , height (pct 50)
         ]
 
 
+zoomControls =
+    styles
+        [ position absolute
+        , bottom (pct 10)
+        ]
+
+
+zoomButton =
+    styles
+        [ display block
+        ]
+
+
 gameColumnWidth =
-    100 - controlPanelWidth
-
-
-controlPanelWidth =
-    100 / 3
+    pct (100 * 4 / 7)
