@@ -41,16 +41,19 @@ module.exports = {
     extensions: [ '', '.js', '.elm' ],
   },
   module: {
-    noParse: /\.elm$/,
     loaders: [
       {
         test: /\.elm$/,
-        exclude: [ /elm-stuff/, /node_modules/ ],
+        exclude: [ /elm-stuff/, /node_modules/, /Stylesheets\.elm/ ],
         loader: 'elm-hot!elm-webpack?verbose=true&warn=true&debug=true&pathToMake=' + paths.elmMake,
       },
       {
         test: /\.css$/,
         loader: 'style!css!postcss',
+      },
+      {
+        test: /Stylesheets\.elm$/,
+        loader: 'style!css!elm-css-webpack',
       },
       {
         exclude: [

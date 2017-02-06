@@ -1,5 +1,5 @@
 
-require('./main.css')
+require('./Stylesheets.elm')
 var Elm = require('./Main.elm')
 
 var root = document.getElementById('root')

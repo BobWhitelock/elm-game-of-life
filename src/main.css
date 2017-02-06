@@ -1,6 +1,0 @@
-body {
-  /* Need this here to prevent user agent stylesheet from adding margin to
-   * body, which bumps up the overall page size so scrollbar is shown. */
-  margin: 0;
-}
-

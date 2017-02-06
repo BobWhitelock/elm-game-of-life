@@ -1,7 +1,16 @@
 module Styles exposing (..)
 
 import Css exposing (..)
+import Css.Elements exposing (..)
 import Html.Attributes
+
+
+css =
+    stylesheet
+        [ body
+            [ margin zero
+            ]
+        ]
 
 
 styles =
