@@ -35,7 +35,7 @@ module.exports = {
     loaders: [
       {
         test: /\.elm$/,
-        exclude: [ /elm-stuff/, /node_modules/, /Stylesheets\.elm/ ],
+        exclude: [ /elm-stuff/, /node_modules/ ],
 
         // Use the local installation of elm-make
         loader: 'elm-webpack',
@@ -46,14 +46,6 @@ module.exports = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss'),
-      },
-      // TODO: May be better (possibly more performant/ allow other
-      // transformations on output CSS?) to just use elm-css-webpack-loader in
-      // development (for nicer dev experience) and then compile to CSS file in
-      // production?
-      {
-        test: /Stylesheets\.elm$/,
-        loader: 'style!css!elm-css-webpack',
       },
       {
         exclude: [
@@ -99,6 +91,7 @@ module.exports = {
       root: root,
       verbose: true,
       dry: false,
+      exclude: 'css/index.css',
     }),
 
     // Minify the compiled JavaScript.
