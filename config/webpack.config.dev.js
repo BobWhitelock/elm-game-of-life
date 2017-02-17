@@ -44,7 +44,7 @@ module.exports = {
     loaders: [
       {
         test: /\.elm$/,
-        exclude: [ /elm-stuff/, /node_modules/, /Stylesheets\.elm/ ],
+        exclude: [ /elm-stuff/, /node_modules/, /Styles\/Main\.elm$/ ],
         loader: 'elm-hot!elm-webpack?verbose=true&warn=true&debug=true&pathToMake=' + paths.elmMake,
       },
       {
@@ -52,7 +52,7 @@ module.exports = {
         loader: 'style!css!postcss',
       },
       {
-        test: /Stylesheets\.elm$/,
+        test: /Styles\/Main\.elm$/,
         loader: 'style!css!elm-css-webpack',
       },
       {

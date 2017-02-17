@@ -10,7 +10,8 @@ import Model exposing (Model, Icons)
 import GameView
 import ZoomLevel exposing (ZoomLevel)
 import TickPeriod
-import Styles
+import Styles.Classes as Classes
+import Styles.Inline
 
 
 { id, class, classList } =
@@ -27,8 +28,8 @@ view model =
                 "Run"
     in
         div
-            [ class [ Styles.WindowWrapper ] ]
-            [ div [ class [ Styles.CentredPage ] ]
+            [ class [ Classes.WindowWrapper ] ]
+            [ div [ class [ Classes.CentredPage ] ]
                 [ game model
                 , controlPanel model
                 ]
@@ -36,14 +37,14 @@ view model =
 
 
 game model =
-    div [ class [ Styles.GameColumn ] ]
+    div [ class [ Classes.GameColumn ] ]
         [ div [] [ panUpButton model ]
         , div
-            [ class [ Styles.Game ]
+            [ class [ Classes.Game ]
             ]
-            [ div [ class [ Styles.SidePanButton ] ] [ panLeftButton model ]
+            [ div [ class [ Classes.SidePanButton ] ] [ panLeftButton model ]
             , GameView.gameView model
-            , div [ class [ Styles.SidePanButton ] ] [ panRightButton model ]
+            , div [ class [ Classes.SidePanButton ] ] [ panRightButton model ]
             ]
         , div [] [ panDownButton model ]
         ]
@@ -73,11 +74,11 @@ panButton model direction iconName =
 
 controlPanel model =
     div
-        [ class [ Styles.ControlPanelColumn ]
+        [ class [ Classes.ControlPanelColumn ]
         ]
         [ div
-            [ class [ Styles.ControlPanelInside ]
-            , Styles.controlPanelInside model.viewConfig
+            [ class [ Classes.ControlPanelInside ]
+            , Styles.Inline.controlPanelInside model.viewConfig
             ]
             [ gameControls model
             , zoomControls model
@@ -94,7 +95,7 @@ gameControls model =
             else
                 "play"
     in
-        div [ class [ Styles.ControlPanelSection ] ]
+        div [ class [ Classes.ControlPanelSection ] ]
             [ iterationInfo model
             , div []
                 [ button
@@ -140,8 +141,8 @@ iterationFrequencyInfo model =
 
 zoomControls : Model -> Html Msg
 zoomControls model =
-    div [ class [ Styles.ControlPanelSection ] ]
-        [ div [ class [ Styles.ZoomControls ] ]
+    div [ class [ Classes.ControlPanelSection ] ]
+        [ div [ class [ Classes.ZoomControls ] ]
             [ zoomButton model ZoomIn "plus" ZoomLevel.isMaximum
             , zoomButton model ZoomOut "minus" ZoomLevel.isMinimum
             ]
@@ -153,7 +154,7 @@ zoomButton model msg iconName atLimit =
     button
         [ onClick msg
         , disabled (atLimit model.viewConfig.zoomLevel)
-        , class [ Styles.ZoomButton ]
+        , class [ Classes.ZoomButton ]
         ]
         [ icon model.icons iconName ]
 

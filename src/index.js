@@ -7,7 +7,7 @@ var Elm = require('./Main.elm')
 // out, so compile module to CSS separately using `elm-css` and then require
 // the resulting file.
 if (process.env.NODE_ENV === 'development') {
-  require('./Stylesheets.elm')
+  require('./Styles/Main.elm')
 } else {
   require('../dist/css/index.css')
 }

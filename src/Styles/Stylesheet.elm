@@ -1,21 +1,8 @@
-module Styles exposing (..)
+module Styles.Stylesheet exposing (..)
 
 import Css exposing (..)
 import Css.Elements exposing (..)
-import Html.Attributes
-
-
-type Classes
-    = WindowWrapper
-    | CentredPage
-    | GameColumn
-    | Game
-    | SidePanButton
-    | ControlPanelColumn
-    | ControlPanelInside
-    | ControlPanelSection
-    | ZoomControls
-    | ZoomButton
+import Styles.Classes exposing (..)
 
 
 css =
@@ -89,15 +76,6 @@ css =
             [ display block
             ]
         ]
-
-
-styles =
-    Css.asPairs >> Html.Attributes.style
-
-
-controlPanelInside config =
-    styles
-        [ height (px (toFloat config.svgSize)) ]
 
 
 gameColumnWidth =
