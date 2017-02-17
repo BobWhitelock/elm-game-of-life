@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run build-css && npm run build-js",
     "build-js": "NODE_ENV=production node scripts/build.js",
-    "build-css": "mkdir -p dist/css/ && elm-css src/Stylesheets.elm && mv index.css dist/css/",
+    "build-css": "mkdir -p dist/css/ && elm-css src/Styles/Main.elm --output dist/css/",
     "start": "NODE_ENV=development node scripts/start.js",
     "package": "elm-package",
     "make": "elm-make",
