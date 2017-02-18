@@ -3,8 +3,8 @@ module Utils exposing (..)
 import Set exposing (Set)
 
 
-toggleIn : Set comparable -> comparable -> Set comparable
-toggleIn xs x =
+toggleIn : comparable -> Set comparable -> Set comparable
+toggleIn x xs =
     if Set.member x xs then
         Set.remove x xs
     else

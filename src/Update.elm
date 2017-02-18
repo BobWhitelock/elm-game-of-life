@@ -1,7 +1,8 @@
 module Update exposing (update)
 
+import List.Nonempty exposing ((:::))
 import Model exposing (Model)
-import Cell exposing (..)
+import Cell
 import Coordinates exposing (Coordinates)
 import Messages exposing (..)
 import Utils
@@ -76,6 +77,11 @@ handleMouseClick model coordinates =
 
         modelWithMouseClick =
             updateLastMouseClick model coordinates
+
+        toggleLivingCell cell =
+            List.Nonempty.head model.cellHistory
+                |> Utils.toggleIn cell
+                |> (flip List.Nonempty.replaceHead) model.cellHistory
     in
         if model.running then
             ( modelWithMouseClick, Cmd.none )
@@ -83,7 +89,7 @@ handleMouseClick model coordinates =
             case maybeCell of
                 Just cell ->
                     ( { modelWithMouseClick
-                        | livingCells = Utils.toggleIn model.livingCells cell
+                        | cellHistory = toggleLivingCell cell
                       }
                     , Cmd.none
                     )
@@ -94,12 +100,19 @@ handleMouseClick model coordinates =
 
 nextState : Model -> ( Model, Cmd Msg )
 nextState model =
-    ( { model
-        | livingCells = nextLivingCells model.livingCells
-        , ticks = model.ticks + 1
-      }
-    , Cmd.none
-    )
+    let
+        currentLivingCells =
+            List.Nonempty.head model.cellHistory
+
+        newCellHistory =
+            (Cell.nextLivingCells currentLivingCells) ::: model.cellHistory
+    in
+        ( { model
+            | cellHistory = newCellHistory
+            , ticks = model.ticks + 1
+          }
+        , Cmd.none
+        )
 
 
 updateLastMouseClick : Model -> Coordinates -> Model

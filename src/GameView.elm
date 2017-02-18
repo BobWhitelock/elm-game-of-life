@@ -6,6 +6,7 @@ import Set exposing (Set)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (on)
+import List.Nonempty
 import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Cell exposing (Cell)
@@ -156,7 +157,8 @@ gridCells model =
             \cell ->
                 cellRectAt config (Coordinates.fromCell config cell)
     in
-        Set.filter isVisible model.livingCells
+        List.Nonempty.head model.cellHistory
+            |> Set.filter isVisible
             |> Set.toList
             |> List.map drawCellRect
 

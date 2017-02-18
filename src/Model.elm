@@ -4,6 +4,7 @@ import Set exposing (Set)
 import Dict exposing (Dict)
 import Time exposing (Time)
 import Json.Decode as Json
+import List.Nonempty exposing (Nonempty)
 import Messages exposing (Msg(..))
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
@@ -11,7 +12,7 @@ import ViewConfig exposing (ViewConfig)
 
 
 type alias Model =
-    { livingCells : Set Cell
+    { cellHistory : CellHistory
     , running : Bool
     , ticks : Int
     , tickPeriod : Time
@@ -19,6 +20,12 @@ type alias Model =
     , viewConfig : ViewConfig
     , icons : Icons
     }
+
+
+type alias CellHistory =
+    -- Non-empty List of all previous sets of living Cells; the head contains
+    -- the currently living Cells.
+    Nonempty (Set Cell)
 
 
 
@@ -32,14 +39,7 @@ type alias Icons =
 
 init : Json.Value -> ( Model, Cmd Msg )
 init iconsJson =
-    ( { livingCells =
-            Set.fromList
-                [ ( 1, 0 )
-                , ( 2, 1 )
-                , ( 0, 2 )
-                , ( 1, 2 )
-                , ( 2, 2 )
-                ]
+    ( { cellHistory = initialCellHistory
       , running = False
       , ticks = 0
       , tickPeriod = 200 * Time.millisecond
@@ -49,6 +49,18 @@ init iconsJson =
       }
     , Cmd.none
     )
+
+
+initialCellHistory =
+    List.Nonempty.fromElement
+        (Set.fromList
+            [ ( 1, 0 )
+            , ( 2, 1 )
+            , ( 0, 2 )
+            , ( 1, 2 )
+            , ( 2, 2 )
+            ]
+        )
 
 
 decodeIcons : Json.Value -> Icons
