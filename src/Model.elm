@@ -14,7 +14,6 @@ import ViewConfig exposing (ViewConfig)
 type alias Model =
     { cellHistory : CellHistory
     , running : Bool
-    , ticks : Int
     , tickPeriod : Time
     , lastMouseClick : Coordinates
     , viewConfig : ViewConfig
@@ -41,7 +40,6 @@ init : Json.Value -> ( Model, Cmd Msg )
 init iconsJson =
     ( { cellHistory = initialCellHistory
       , running = False
-      , ticks = 0
       , tickPeriod = 200 * Time.millisecond
       , lastMouseClick = ( 0, 0 )
       , viewConfig = ViewConfig.defaultConfig

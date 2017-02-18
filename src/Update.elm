@@ -107,10 +107,7 @@ nextState model =
         newCellHistory =
             (Cell.nextLivingCells currentLivingCells) ::: model.cellHistory
     in
-        ( { model
-            | cellHistory = newCellHistory
-            , ticks = model.ticks + 1
-          }
+        ( { model | cellHistory = newCellHistory }
         , Cmd.none
         )
 

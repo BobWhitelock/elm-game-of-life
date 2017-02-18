@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.CssHelpers
+import List.Nonempty
 import Messages exposing (..)
 import Model exposing (Model, Icons)
 import GameView
@@ -121,7 +122,8 @@ gameControls model =
 iterationInfo model =
     let
         iterationNumber =
-            toString (model.ticks)
+            List.Nonempty.length model.cellHistory
+                |> toString
     in
         div []
             [ text ("Iteration " ++ iterationNumber)
