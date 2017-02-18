@@ -13,6 +13,7 @@ type Msg
     | Pan Direction
     | DecreaseSpeed
     | IncreaseSpeed
+    | PreviousState
     | NextState
 
 

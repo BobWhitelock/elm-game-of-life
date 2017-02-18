@@ -65,6 +65,11 @@ update msg model =
             , Cmd.none
             )
 
+        PreviousState ->
+            ( { model | cellHistory = List.Nonempty.pop model.cellHistory }
+            , Cmd.none
+            )
+
         NextState ->
             nextState model
 

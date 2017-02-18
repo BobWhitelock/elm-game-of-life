@@ -100,6 +100,11 @@ gameControls model =
             [ iterationInfo model
             , div []
                 [ button
+                    [ onClick PreviousState
+                    , disabled (List.Nonempty.isSingleton model.cellHistory)
+                    ]
+                    [ icon model.icons "skip-back" ]
+                , button
                     [ onClick DecreaseSpeed
                     , disabled (TickPeriod.isMinimumSpeed model.tickPeriod)
                     ]
