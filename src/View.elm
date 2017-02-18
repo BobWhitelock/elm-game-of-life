@@ -111,6 +111,8 @@ gameControls model =
                     , disabled (TickPeriod.isMaximumSpeed model.tickPeriod)
                     ]
                     [ icon model.icons "fast-forward" ]
+                , button [ onClick NextState ]
+                    [ icon model.icons "skip-forward" ]
                 ]
             , iterationFrequencyInfo model
             ]

@@ -21,12 +21,7 @@ update msg model =
             )
 
         Tick _ ->
-            ( { model
-                | livingCells = nextLivingCells model.livingCells
-                , ticks = model.ticks + 1
-              }
-            , Cmd.none
-            )
+            nextState model
 
         MouseClick coordinates ->
             handleMouseClick model coordinates
@@ -69,6 +64,9 @@ update msg model =
             , Cmd.none
             )
 
+        NextState ->
+            nextState model
+
 
 handleMouseClick : Model -> Coordinates -> ( Model, Cmd Msg )
 handleMouseClick model coordinates =
@@ -92,6 +90,16 @@ handleMouseClick model coordinates =
 
                 Nothing ->
                     ( modelWithMouseClick, Cmd.none )
+
+
+nextState : Model -> ( Model, Cmd Msg )
+nextState model =
+    ( { model
+        | livingCells = nextLivingCells model.livingCells
+        , ticks = model.ticks + 1
+      }
+    , Cmd.none
+    )
 
 
 updateLastMouseClick : Model -> Coordinates -> Model
