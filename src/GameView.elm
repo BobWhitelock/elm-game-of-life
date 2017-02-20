@@ -2,18 +2,18 @@ module GameView exposing (gameView)
 
 import Html exposing (Html)
 import Json.Decode as Json
-import Set exposing (Set)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (on)
 import List.Nonempty
+import Dict
 import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
 import ViewConfig exposing (ViewConfig)
 import ZoomLevel
-import WorldState
+import WorldState exposing (State(..))
 
 
 gameView : Model -> Html Msg
@@ -149,31 +149,49 @@ gridCells model =
             ( topLeftX + cellOffset, topLeftY + cellOffset )
 
         isVisible =
-            Cell.isVisible topLeftCell bottomRightCell
+            \cell ->
+                \_ ->
+                    Cell.isVisible topLeftCell bottomRightCell cell
 
         config =
             model.viewConfig
 
+        currentWorldState =
+            List.Nonempty.head model.history
+
         drawCellRect =
             \cell ->
-                cellRectAt config (Coordinates.fromCell config cell)
+                \state ->
+                    cellRectAt config (Coordinates.fromCell config cell) state
     in
-        List.Nonempty.head model.history
-            |> WorldState.livingCells
-            |> Set.filter isVisible
-            |> Set.toList
-            |> List.map drawCellRect
+        WorldState.livingCellsWithStates currentWorldState
+            |> Dict.filter isVisible
+            |> Dict.map drawCellRect
+            |> Dict.toList
+            |> List.map Tuple.second
 
 
-cellRectAt : ViewConfig -> Coordinates -> Svg Msg
-cellRectAt config ( rectX, rectY ) =
-    rect
-        [ x (toString (rectX + config.borderSize))
-        , y (toString (rectY + config.borderSize))
-        , width (toString config.cellSize)
-        , height (toString config.cellSize)
-        , strokeWidth lineWidth
-        , stroke "black"
-        , fill "darkgrey"
-        ]
-        []
+cellRectAt : ViewConfig -> Coordinates -> State -> Svg Msg
+cellRectAt config ( rectX, rectY ) state =
+    let
+        cellColour =
+            case state of
+                Existing ->
+                    "darkgrey"
+
+                New ->
+                    "lightblue"
+
+                _ ->
+                    ""
+    in
+        rect
+            [ x (toString (rectX + config.borderSize))
+            , y (toString (rectY + config.borderSize))
+            , width (toString config.cellSize)
+            , height (toString config.cellSize)
+            , strokeWidth lineWidth
+            , stroke "black"
+            , fill cellColour
+            ]
+            []

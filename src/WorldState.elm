@@ -5,6 +5,7 @@ module WorldState
         , fromExistingCells
         , cellsWithState
         , livingCells
+        , livingCellsWithStates
         , toggleCellState
         )
 
@@ -42,13 +43,17 @@ cellsWithState neededState worldState =
 
 livingCells : WorldState -> Set Cell
 livingCells worldState =
-    let
-        cellIsAlive =
-            \cell ->
-                \cellState ->
-                    List.member cellState [ Existing, New ]
-    in
-        filterCells cellIsAlive worldState
+    filterCells cellIsAlive worldState
+
+
+livingCellsWithStates : WorldState -> WorldState
+livingCellsWithStates worldState =
+    Dict.filter cellIsAlive worldState
+
+
+cellIsAlive : Cell -> State -> Bool
+cellIsAlive _ state =
+    List.member state [ Existing, New ]
 
 
 filterCells : (Cell -> State -> Bool) -> WorldState -> Set Cell
