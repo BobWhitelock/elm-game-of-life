@@ -5,10 +5,10 @@ import Model exposing (Model)
 import Cell
 import Coordinates exposing (Coordinates)
 import Messages exposing (..)
-import Utils
 import ZoomLevel exposing (ZoomLevel)
 import TickPeriod
 import UpdateViewConfig
+import WorldState
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,7 +66,7 @@ update msg model =
             )
 
         PreviousState ->
-            ( { model | cellHistory = List.Nonempty.pop model.cellHistory }
+            ( { model | history = List.Nonempty.pop model.history }
             , Cmd.none
             )
 
@@ -84,9 +84,9 @@ handleMouseClick model coordinates =
             updateLastMouseClick model coordinates
 
         toggleLivingCell cell =
-            List.Nonempty.head model.cellHistory
-                |> Utils.toggleIn cell
-                |> (flip List.Nonempty.replaceHead) model.cellHistory
+            List.Nonempty.head model.history
+                |> WorldState.toggleCellState cell
+                |> (flip List.Nonempty.replaceHead) model.history
     in
         if model.running then
             ( modelWithMouseClick, Cmd.none )
@@ -94,7 +94,7 @@ handleMouseClick model coordinates =
             case maybeCell of
                 Just cell ->
                     ( { modelWithMouseClick
-                        | cellHistory = toggleLivingCell cell
+                        | history = toggleLivingCell cell
                       }
                     , Cmd.none
                     )
@@ -107,12 +107,15 @@ nextState : Model -> ( Model, Cmd Msg )
 nextState model =
     let
         currentLivingCells =
-            List.Nonempty.head model.cellHistory
+            List.Nonempty.head model.history
+                |> WorldState.livingCells
 
-        newCellHistory =
-            (Cell.nextLivingCells currentLivingCells) ::: model.cellHistory
+        newHistory =
+            Cell.nextLivingCells currentLivingCells
+                |> WorldState.fromExistingCells
+                |> (flip List.Nonempty.cons) model.history
     in
-        ( { model | cellHistory = newCellHistory }
+        ( { model | history = newHistory }
         , Cmd.none
         )
 

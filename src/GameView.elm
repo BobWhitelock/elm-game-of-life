@@ -13,6 +13,7 @@ import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
 import ViewConfig exposing (ViewConfig)
 import ZoomLevel
+import WorldState
 
 
 gameView : Model -> Html Msg
@@ -157,7 +158,8 @@ gridCells model =
             \cell ->
                 cellRectAt config (Coordinates.fromCell config cell)
     in
-        List.Nonempty.head model.cellHistory
+        List.Nonempty.head model.history
+            |> WorldState.livingCells
             |> Set.filter isVisible
             |> Set.toList
             |> List.map drawCellRect

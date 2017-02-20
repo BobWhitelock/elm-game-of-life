@@ -101,7 +101,7 @@ gameControls model =
             , div []
                 [ button
                     [ onClick PreviousState
-                    , disabled (List.Nonempty.isSingleton model.cellHistory)
+                    , disabled (List.Nonempty.isSingleton model.history)
                     ]
                     [ icon model.icons "skip-back" ]
                 , button
@@ -127,7 +127,7 @@ gameControls model =
 iterationInfo model =
     let
         iterationNumber =
-            List.Nonempty.length model.cellHistory
+            List.Nonempty.length model.history
                 |> toString
     in
         div []

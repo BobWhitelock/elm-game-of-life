@@ -9,10 +9,11 @@ import Messages exposing (Msg(..))
 import Cell exposing (Cell)
 import Coordinates exposing (Coordinates)
 import ViewConfig exposing (ViewConfig)
+import WorldState exposing (WorldState)
 
 
 type alias Model =
-    { cellHistory : CellHistory
+    { history : History
     , running : Bool
     , tickPeriod : Time
     , lastMouseClick : Coordinates
@@ -21,10 +22,10 @@ type alias Model =
     }
 
 
-type alias CellHistory =
-    -- Non-empty List of all previous sets of living Cells; the head contains
-    -- the currently living Cells.
-    Nonempty (Set Cell)
+type alias History =
+    -- Non-empty List of all previous WorldStates; the head contains the
+    -- current state, which may be modified by the user.
+    Nonempty WorldState
 
 
 
@@ -38,7 +39,7 @@ type alias Icons =
 
 init : Json.Value -> ( Model, Cmd Msg )
 init iconsJson =
-    ( { cellHistory = initialCellHistory
+    ( { history = List.Nonempty.fromElement initialWorldState
       , running = False
       , tickPeriod = 200 * Time.millisecond
       , lastMouseClick = ( 0, 0 )
@@ -49,16 +50,16 @@ init iconsJson =
     )
 
 
-initialCellHistory =
-    List.Nonempty.fromElement
-        (Set.fromList
-            [ ( 1, 0 )
-            , ( 2, 1 )
-            , ( 0, 2 )
-            , ( 1, 2 )
-            , ( 2, 2 )
-            ]
-        )
+initialWorldState : WorldState
+initialWorldState =
+    Set.fromList
+        [ ( 1, 0 )
+        , ( 2, 1 )
+        , ( 0, 2 )
+        , ( 1, 2 )
+        , ( 2, 2 )
+        ]
+        |> WorldState.fromExistingCells
 
 
 decodeIcons : Json.Value -> Icons
