@@ -5,6 +5,7 @@ import CellTests
 import CoordinatesTests
 import ZoomLevelTests
 import UpdateViewConfigTests
+import WorldStateTests
 
 
 -- TODO: Need to duplicate main app dependencies for `tests` dir?
@@ -17,4 +18,5 @@ all =
         , CoordinatesTests.all
         , ZoomLevelTests.all
         , UpdateViewConfigTests.all
+        , WorldStateTests.all
         ]
